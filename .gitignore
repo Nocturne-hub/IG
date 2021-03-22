@@ -1,8 +1,6 @@
-/Bin
+/Bin/*.exe
 /Tmp
 /Temp
-Parcours/.vs/*
-Parcours/.vs
 /Parcours/.vs
-/Parcours/.vs/
-/Parcours/.vs/*
+
+
