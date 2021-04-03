@@ -4,9 +4,9 @@
 /* nicolas.janey@univ-fcomte.fr                 */
 /* Septembre 2012                               */
 
+
 #include <stdlib.h>
 #include <stdio.h>
-
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>

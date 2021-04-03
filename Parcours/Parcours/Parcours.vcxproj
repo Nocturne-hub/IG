@@ -100,7 +100,15 @@
     <Library Include="..\..\Lib\glut32.ms.lib" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Src\Exemple.cpp" />
+    <ClCompile Include="Anneau.cpp" />
+    <ClCompile Include="Patatoide.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Vaisseau.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Anneau.h" />
+    <ClInclude Include="Patatoide.h" />
+    <ClInclude Include="Vaisseau.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

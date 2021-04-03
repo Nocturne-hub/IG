@@ -1,9 +1,9 @@
-/* Une animation en OpenGL                      */
-/*                                              */
-/* Auteur: Nicolas JANEY                        */
-/* nicolas.janey@univ-fcomte.fr                 */
-/* Mars 2021                                    */
-
+/* Une animation en OpenGL                      .
+/*                                              .
+/* Auteur: Nicolas JANEY                        .
+/* nicolas.janey@univ-fcomte.fr                 .
+/* Mars 2021                                    .
+/*
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -16,8 +16,8 @@
 #define M_PI 3.14159265358979323846264338327950288
 #endif
 
-/* Variables et constantes globales             */
-/* pour les angles et les couleurs utilises     */
+/* Variables et constantes globales             
+/* pour les angles et les couleurs utilises     
 
 static float rx = 0.0F;
 static float ry = 0.0F;
@@ -38,8 +38,8 @@ static float longueurTunnel2 = 8.0 * 2.0 * M_PI * 2.0;
 
 static int obj = 1;
 
-/* Affichage des informations relatives         */
-/* a OpenGL                                     */
+/* Affichage des informations relatives         
+/* a OpenGL                                     
 
 static void informationsOpenGL(void) {
   printf("GL_VENDOR     = %s\n",(const char *) glGetString(GL_VENDOR));
@@ -48,9 +48,9 @@ static void informationsOpenGL(void) {
   printf("GL_EXTENSIONS = %s\n",(const char *) glGetString(GL_EXTENSIONS));
 }
 
-/* Fonction d'initialisation des parametres     */
-/* OpenGL ne changeant pas au cours de la vie   */
-/* du programme                                 */
+/* Fonction d'initialisation des parametres     .
+/* OpenGL ne changeant pas au cours de la vie   .
+/* du programme                                 .
 
 static void init(void) {
   const GLfloat shininess[] = { 50.0 };
@@ -68,7 +68,7 @@ static void init(void) {
   glEnable(GL_AUTO_NORMAL);
 }
 
-/* Scene dessinee                               */
+/* Scene dessinee                               .
 
 static void solidCylindre(double rayon,double hauteur,int nbFTube,int nbFHauteur) {
   GLboolean nm = glIsEnabled(GL_NORMALIZE);
@@ -210,8 +210,8 @@ static void scene2(void) {
   glPopMatrix();
 }
 
-/* Fonction executee lors d'un rafraichissement */
-/* de la fenetre de dessin                      */
+/* Fonction executee lors d'un rafraichissement .
+/* de la fenetre de dessin                      .
 
 static void display(void) {
   printf("D\n");
@@ -265,8 +265,8 @@ static void display(void) {
 	printf("Attention erreur %d\n",error);
 }
 
-/* Fonction executee lorsqu'aucun evenement     */
-/* n'est en file d'attente                      */
+/* Fonction executee lorsqu'aucun evenement     .
+/* n'est en file d'attente                      .
 
 static void idle(void) {
 	distanceParcourue += delta;
@@ -276,8 +276,8 @@ static void idle(void) {
   glutPostRedisplay();
 }
 
-/* Fonction executee lors d'un changement       */
-/* de la taille de la fenetre OpenGL            */
+/* Fonction executee lors d'un changement       .
+/* de la taille de la fenetre OpenGL            .
 
 static void reshape(int x,int y) {
   glViewport(0,0,x,y); 
@@ -288,8 +288,8 @@ static void reshape(int x,int y) {
   glLoadIdentity();
 }
 
-/* Fonction executee lors de l'appui            */
-/* d'une touche non alphanumerique du clavier   */
+/* Fonction executee lors de l'appui            .
+/* d'une touche non alphanumerique du clavier   .
 
 static void special(int key,int x,int y) {
   switch (key) {
@@ -319,8 +319,8 @@ static void special(int key,int x,int y) {
 	  break; }
 }
 
-/* Fonction executee lors de l'appui            */
-/* d'une touche alphanumerique du clavier       */
+/* Fonction executee lors de l'appui            .
+/* d'une touche alphanumerique du clavier       .
 
 static void keyboard(unsigned char key,int x,int y) {
   switch (key) {
@@ -360,19 +360,6 @@ static void keyboard(unsigned char key,int x,int y) {
 	  break; }
 }
 
-/* Fonction principale                          */
 
-int main(int argc,char **argv) {
-  glutInit(&argc,argv);
-  glutInitDisplayMode(GLUT_RGBA|GLUT_DEPTH|GLUT_DOUBLE);
-  glutInitWindowSize(480,320);
-  glutInitWindowPosition(50,50);
-  glutCreateWindow("Un circuit matérialisé par des anneaux");
-  init();
-  glutKeyboardFunc(keyboard);
-  glutReshapeFunc(reshape);
-  glutSpecialFunc(special);
-  glutDisplayFunc(display);
-  glutMainLoop();
-  return(0);
-}
+*/
+
