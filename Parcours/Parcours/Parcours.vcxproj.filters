@@ -18,27 +18,27 @@
     <Library Include="..\..\Lib\glut32.ms.lib" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="..\..\Src\Patatoide.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Vaisseau.cpp">
+    <ClCompile Include="..\..\Src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Patatoide.cpp">
+    <ClCompile Include="..\..\Src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Anneau.cpp">
+    <ClCompile Include="..\..\Src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Vaisseau.h">
+    <ClInclude Include="..\..\Include\Vaisseau.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Patatoide.h">
+    <ClInclude Include="..\..\Include\Patatoide.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Anneau.h">
+    <ClInclude Include="..\..\Include\Anneau.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

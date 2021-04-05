@@ -59,18 +59,18 @@ static void scene(void) {
     glPushMatrix();
         glPushMatrix();
             glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
-            p.myPatatoide(0.3f);
+            p.myPatatoide(1.5f);
         glPopMatrix();
 
         glPushMatrix();
-            glTranslatef(1.0f, 0.0f, 0.0f);
+            glTranslatef(5.0f, 0.0f, 0.0f);
             glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
-            v.mySolidVaisseau(0.5f);
+            v.mySolidVaisseau(2.0f);
         glPopMatrix();
 
         glPushMatrix();
             glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
-            a.myPrecious(0.1, 0.5, 18, 72);
+            a.myPrecious(0.1, 3.0, 18, 72);
         glPopMatrix();
    glPopMatrix();
 
@@ -123,7 +123,7 @@ static void reshape(int wx, int wy) {
     glViewport(0, 0, wx, wy);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+    glOrtho(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
