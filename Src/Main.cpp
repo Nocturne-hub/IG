@@ -13,6 +13,7 @@ static float angle = 0.0;
 static bool animation = false;
 static bool gauche = true;
 static bool isMouse = false;
+static bool firstPerson = false;
 
 static const float blanc[] = { 1.0F,1.0F,1.0F,1.0F };
 static const float jaune[] = { 1.0F,1.0F,0.0F,1.0F };
@@ -84,9 +85,21 @@ static void display(void) {
     glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
     glPushMatrix();
 
-    // printf("D\n");
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glPushMatrix();
+    float cameraPosX = firstPerson ? v.getPosX() : v.getPosX();
+    float cameraPosY = firstPerson ? v.getPosY() : v.getPosY() + 1.0;
+    float cameraPosZ = firstPerson ? -v.getPosZ() : -v.getPosZ() - 1.0;
+
+    float cameraLookX = firstPerson ? v.getPosX() : v.getPosX();
+    float cameraLookY = firstPerson ? v.getPosY() : v.getPosY();
+    float cameraLookZ = firstPerson ? v.getPosZ() : v.getPosZ() + 0.5;
+
+
+    printf("Vaisseau x,y,z : %f %f %f\n", v.getPosX(), v.getPosY(), v.getPosZ());
+    printf("Camera x,y,z : %f %f %f\n", cameraPosX, cameraPosY, cameraPosZ);
+    printf("Camera look x,y,z : %f %f %f\n", cameraLookX, cameraLookY, cameraLookZ);
+
+    gluLookAt(cameraPosX, cameraPosY, cameraPosZ, cameraLookX, cameraLookY, cameraLookZ, 0.0, 1.0, 0.25);
+
     if (filDeFer)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     else
@@ -177,6 +190,10 @@ static void special(int specialKey, int x, int y) {
         break;
     case GLUT_KEY_DOWN:
         v.setPosY(v.getPosY() - 0.5f);
+        glutPostRedisplay();
+        break;
+    case GLUT_KEY_F1:
+        firstPerson = !firstPerson;
         glutPostRedisplay();
         break;
     }
