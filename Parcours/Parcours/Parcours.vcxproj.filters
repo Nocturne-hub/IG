@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
+    <Filter Include="Source Files\Coord3D">
+      <UniqueIdentifier>{94c9e71f-c558-4c75-8d71-6211988e1cd8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\Lib\glut32.ms.lib" />
@@ -30,6 +33,33 @@
     <ClCompile Include="..\..\Src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\Vaisseau.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Anneau.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Coord3D\CH3D.cpp">
+      <Filter>Source Files\Coord3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Coord3D\Dir3D.cpp">
+      <Filter>Source Files\Coord3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Coord3D\Pos3D.cpp">
+      <Filter>Source Files\Coord3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Coord3D\Rt3D.cpp">
+      <Filter>Source Files\Coord3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Coord3D\Sc3D.cpp">
+      <Filter>Source Files\Coord3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Coord3D\TG3D.cpp">
+      <Filter>Source Files\Coord3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\Coord3D\Tr3D.cpp">
+      <Filter>Source Files\Coord3D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\Vaisseau.h">
@@ -39,6 +69,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\Anneau.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\CH3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Dir3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Pos3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Rt3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Sc3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\TG3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Tr3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
