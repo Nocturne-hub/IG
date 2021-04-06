@@ -1,7 +1,7 @@
 #include "Vaisseau.h"
 
 void Vaisseau::mySolidVaisseau(float c) {
-    double m = c / 2;
+    float m = c / 2;
 
     glBegin(GL_TRIANGLES);
 
