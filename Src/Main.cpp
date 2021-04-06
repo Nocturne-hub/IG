@@ -1,9 +1,3 @@
-/* Fonctionnement de GLUt                       */
-/*                                              */
-/* Auteur: Nicolas JANEY                        */
-/* nicolas.janey@univ-fcomte.fr                 */
-/* Janvier 2019                                 */
-
 #include "Vaisseau.h"
 #include "Patatoide.h"
 #include "Anneau.h"
@@ -63,7 +57,7 @@ static void scene(void) {
         glPopMatrix();
 
         glPushMatrix();
-            glTranslatef(5.0f, 0.0f, 0.0f);
+            glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ());
             glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
             v.mySolidVaisseau(2.0f);
         glPopMatrix();
@@ -73,7 +67,6 @@ static void scene(void) {
             a.myPrecious(0.1, 3.0, 18, 72);
         glPopMatrix();
    glPopMatrix();
-
 }
 
 /* Fonction executee lors d'un rafraichissement */
@@ -170,14 +163,20 @@ static void keyboard(unsigned char key, int x, int y) {
 static void special(int specialKey, int x, int y) {
     printf("S  %4d %4d %4d\n", specialKey, x, y);
     switch (specialKey) {
-    case 0x64:
-        printf("gauche");
-        gauche = true;
+    case GLUT_KEY_LEFT:
+        v.setPosX(v.getPosX() - 0.5f);
         glutPostRedisplay();
         break;
-    case 0x66:
-        printf("droite");
-        gauche = false;
+    case GLUT_KEY_RIGHT:
+        v.setPosX(v.getPosX() + 0.5f);
+        glutPostRedisplay();
+        break;
+    case GLUT_KEY_UP:
+        v.setPosY(v.getPosY() + 0.5f);
+        glutPostRedisplay();
+        break;
+    case GLUT_KEY_DOWN:
+        v.setPosY(v.getPosY() - 0.5f);
         glutPostRedisplay();
         break;
     }

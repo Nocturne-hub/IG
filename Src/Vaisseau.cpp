@@ -1,6 +1,6 @@
 #include "Vaisseau.h"
 
-void Vaisseau::mySolidVaisseau(double c) {
+void Vaisseau::mySolidVaisseau(float c) {
     double m = c / 2;
 
     glBegin(GL_TRIANGLES);
@@ -28,4 +28,28 @@ void Vaisseau::mySolidVaisseau(double c) {
 
     glEnd();
 
+}
+
+float Vaisseau::getPosX() {
+    return posX;
+}
+
+float Vaisseau::getPosY() {
+    return posY;
+}
+
+float Vaisseau::getPosZ() {
+    return posZ;
+}
+
+void Vaisseau::setPosX(float x) {
+    posX = x;
+}
+
+void Vaisseau::setPosY(float y) {
+    posY = y;
+}
+
+void Vaisseau::setPosZ(float z) {
+    posZ = z;
 }
