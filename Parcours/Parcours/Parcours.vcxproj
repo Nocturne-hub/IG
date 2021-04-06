@@ -100,6 +100,13 @@
     <Library Include="..\..\Lib\glut32.ms.lib" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Src\Coord3D\CH3D.cpp" />
+    <ClCompile Include="..\..\Src\Coord3D\Dir3D.cpp" />
+    <ClCompile Include="..\..\Src\Coord3D\Pos3D.cpp" />
+    <ClCompile Include="..\..\Src\Coord3D\Rt3D.cpp" />
+    <ClCompile Include="..\..\Src\Coord3D\Sc3D.cpp" />
+    <ClCompile Include="..\..\Src\Coord3D\TG3D.cpp" />
+    <ClCompile Include="..\..\Src\Coord3D\Tr3D.cpp" />
     <ClCompile Include="..\..\Src\Patatoide.cpp" />
     <ClCompile Include="..\..\Src\Vaisseau.cpp" />
     <ClCompile Include="..\..\Src\Anneau.cpp" />
@@ -107,7 +114,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\Anneau.h" />
+    <ClInclude Include="..\..\Include\CH3D.h" />
+    <ClInclude Include="..\..\Include\Dir3D.h" />
     <ClInclude Include="..\..\Include\Patatoide.h" />
+    <ClInclude Include="..\..\Include\Pos3D.h" />
+    <ClInclude Include="..\..\Include\Rt3D.h" />
+    <ClInclude Include="..\..\Include\Sc3D.h" />
+    <ClInclude Include="..\..\Include\TG3D.h" />
+    <ClInclude Include="..\..\Include\Tr3D.h" />
     <ClInclude Include="..\..\Include\Vaisseau.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

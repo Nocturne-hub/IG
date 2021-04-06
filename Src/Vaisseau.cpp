@@ -6,6 +6,7 @@ void Vaisseau::mySolidVaisseau(float c) {
     glBegin(GL_TRIANGLES);
 
     // Dessous  1-3-4
+    
     glVertex3f(-m, m, 0.0f);    //1
     glVertex3f(m, m, 0.0f);     //4
     glVertex3f(0.0f, -m / 2, -0.1f); //3
