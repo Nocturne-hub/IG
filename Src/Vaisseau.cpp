@@ -1,6 +1,30 @@
 #include "Vaisseau.h"
 #include "Dir3D.h"
 
+float Vaisseau::getPosX() {
+    return posX;
+}
+
+float Vaisseau::getPosY() {
+    return posY;
+}
+
+float Vaisseau::getPosZ() {
+    return posZ;
+}
+
+void Vaisseau::setPosX(float x) {
+    posX = x;
+}
+
+void Vaisseau::setPosY(float y) {
+    posY = y;
+}
+
+void Vaisseau::setPosZ(float z) {
+    posZ = z;
+}
+
 void Vaisseau::mySolidVaisseau(float c) {
     float m = c / 2;
 
@@ -18,9 +42,14 @@ void Vaisseau::mySolidVaisseau(float c) {
 
     Dir3D dNorm1 = d14 ^ d13;
     glNormal3f(dNorm1.x, dNorm1.y, dNorm1.z);
+    glTexCoord2f(0.0, 1.0);
     glVertex3f(p1.x, p1.y, p1.z);    //1
+    glTexCoord2f(1.0, 1.0);
     glVertex3f(p4.x, p4.y, p4.z);    //4
+    glTexCoord2f(1.0, 0.0);
     glVertex3f(p3.x, p3.y, p3.z);    //3
+    glTexCoord2f(0.0, 0.0);
+    glVertex3f(p4.x, p4.y, p4.z);
 
     // Gauche 1-2-3
 
@@ -47,31 +76,36 @@ void Vaisseau::mySolidVaisseau(float c) {
     glVertex3f(p2.x, p2.y, p2.z);    //2
     glVertex3f(p4.x, p4.y, p4.z);    //4
 
-
     glEnd();
 
 }
 
-float Vaisseau::getPosX() {
-    return posX;
+void Vaisseau::initTexture(void) {
+    
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID); char* nomFichier = "Emoji1.png";
+    printf("%s\n", nomFichier);
+    int rx;
+    int ry;
+
+    unsigned char* img = chargeImagePng(nomFichier, &rx, &ry);
+    printf("%s\n", img);
+    if (img) {
+        glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
+        free(img);
+        printf("Texture chargee %d\n", textureID);
+    }
+    else {
+        glDeleteTextures(1, &textureID);
+        textureID = 0;
+        printf("Texture non chargee\n");
+    }
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    
 }
 
-float Vaisseau::getPosY() {
-    return posY;
-}
-
-float Vaisseau::getPosZ() {
-    return posZ;
-}
-
-void Vaisseau::setPosX(float x) {
-    posX = x;
-}
-
-void Vaisseau::setPosY(float y) {
-    posY = y;
-}
-
-void Vaisseau::setPosZ(float z) {
-    posZ = z;
-}

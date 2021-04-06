@@ -13,7 +13,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#include "PNG/ChargePngFile.h"
+#include "../Src/Texture/ChargePngFile.h"
 #define RXM 256
 #define RYM 256
 
@@ -33,7 +33,7 @@ static float rz = 0.0F;
 
 //////////////////////////////////////////////////
 
-static unsigned int[6] textureID;
+static unsigned int textureID;
 
 /* Fonction d'initialisation des parametres     */
 /* OpenGL ne changeant pas au cours de la vie   */
@@ -72,7 +72,7 @@ static void initTexture(void) {
 	
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1); 
-	glGenTextures(6,&textureID);
+	glGenTextures(1,&textureID);
 	glBindTexture(GL_TEXTURE_2D,textureID);
 
 	char* nomFichier = "Emoji1.png";

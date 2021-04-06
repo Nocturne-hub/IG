@@ -24,9 +24,13 @@ static const float bleu[] = { 0.0F,0.0F,1.0F,1.0F };
 static int rz = 0;
 static int mouseX = 0;
 
+
+static int texture = 1;
+
 Anneau a;
 Patatoide p;
 Vaisseau v;
+
 
 /* Fonction d'initialisation des parametres     */
 /* OpenGL ne changeant pas au cours de la vie   */
@@ -46,6 +50,7 @@ static void init(void) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
     glEnable(GL_AUTO_NORMAL);
+    v.initTexture();
 }
 
 /* Scene dessinee                               */
@@ -74,6 +79,10 @@ static void scene(void) {
 /* de la fenetre de dessin                      */
 
 static void display(void) {
+    if (texture)
+        glEnable(GL_TEXTURE_2D);
+    else
+        glDisable(GL_TEXTURE_2D);
     int rotate = gauche ? -1.0 : 1.0;
     printf("D\n");
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -87,11 +96,11 @@ static void display(void) {
 
     float cameraPosX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraPosY = firstPerson ? v.getPosY() : v.getPosY() + 1.0;
-    float cameraPosZ = firstPerson ? -v.getPosZ() : -v.getPosZ() - 1.0;
+    float cameraPosZ = firstPerson ? -v.getPosZ() : -(v.getPosZ() - 1.0);
 
     float cameraLookX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraLookY = firstPerson ? v.getPosY() : v.getPosY();
-    float cameraLookZ = firstPerson ? v.getPosZ() : v.getPosZ() + 0.5;
+    float cameraLookZ = firstPerson ? -v.getPosZ() : -(v.getPosZ() + 0.5);
 
 
     printf("Vaisseau x,y,z : %f %f %f\n", v.getPosX(), v.getPosY(), v.getPosZ());
@@ -230,6 +239,8 @@ static void passiveMouseMotion(int x, int y) {
 /* lors de l'exécution de la fonction exit()    */
 
 static void clean(void) {
+    if (v.textureID != 0)
+        glDeleteTextures(1, &v.textureID);
     printf("Bye\n");
 }
 

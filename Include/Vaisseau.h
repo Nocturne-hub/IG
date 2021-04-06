@@ -6,6 +6,8 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#include "Texture/ChargePngFile.h"
+
 class Vaisseau {
 	private:
 		float posX = 0.0f;
@@ -13,6 +15,7 @@ class Vaisseau {
 		float posZ = 0.0f;
 
 	public:
+		unsigned int textureID;
 		void mySolidVaisseau(float c);
 		float getPosX();
 		float getPosY();
@@ -20,6 +23,9 @@ class Vaisseau {
 		void setPosX(float x);
 		void setPosY(float y);
 		void setPosZ(float z);
+		void initTexture(void);
+		
+
 
 };
 
