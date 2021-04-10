@@ -2,6 +2,9 @@
 #include "Patatoide.h"
 #include "Anneau.h"
 
+#define PI 3.1415926535898
+
+
 /* Variables globales                           */
 
 static int wTx = 640;              // Resolution horizontale de la fenetre
@@ -53,6 +56,8 @@ static void init(void) {
     v.initTexture();
 }
 
+
+
 /* Scene dessinee                               */
 
 static void scene(void) {
@@ -63,15 +68,18 @@ static void scene(void) {
         glPopMatrix();
 
         glPushMatrix();
-            glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ());
-            glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
-            v.mySolidVaisseau(2.0f);
-        glPopMatrix();
-
-        glPushMatrix();
             glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
             a.myPrecious(0.1, 3.0, 18, 72);
         glPopMatrix();
+
+        glPushMatrix();
+        v.setPosX(5.0f);
+        glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ());
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
+        v.mySolidVaisseau(2.0f);
+        glPopMatrix();
+
+        v.mySolidSpaceShip(1.0f);
    glPopMatrix();
 }
 
@@ -86,12 +94,12 @@ static void display(void) {
     int rotate = gauche ? -1.0 : 1.0;
     printf("D\n");
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    const GLfloat light0_position[] = { 0.0,0.0,0.0,1.0 };
+    /*const GLfloat light0_position[] = { 0.0,0.0,0.0,1.0 };
     const GLfloat light1_position[] = { -1.0,1.0,1.0,0.0 };
     const GLfloat light2_position[] = { 1.0,-1.0,1.0,0.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
     glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-    glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
+    glLightfv(GL_LIGHT2, GL_POSITION, light2_position);*/
     glPushMatrix();
 
     float cameraPosX = firstPerson ? v.getPosX() : v.getPosX();

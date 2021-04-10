@@ -23,8 +23,13 @@ class Vaisseau {
 		void setPosX(float x);
 		void setPosY(float y);
 		void setPosZ(float z);
-		void initTexture(void);
-		
+		void initTexture();
+		void mySolidSpaceShip(double c);
+		void mySolidShipWing(double c);
+		void mySolidSpaceShipBody(GLdouble base, GLdouble height, GLint slices, GLint stacks);
+		void mySolidCone(GLdouble base, GLdouble height, GLint slices, GLint stacks);
+		void mySolidCylindre(GLdouble base, GLdouble height, GLint slices, GLint stacks);
+		void Quadrilatere(double c);
 
 
 };

@@ -81,7 +81,6 @@ void Vaisseau::mySolidVaisseau(float c) {
 }
 
 void Vaisseau::initTexture(void) {
-    
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID); char* nomFichier = "Emoji1.png";
@@ -104,8 +103,105 @@ void Vaisseau::initTexture(void) {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-    
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);    
 }
 
+void Vaisseau::Quadrilatere(double c) {
+    double m = c / 2;
+
+    glBegin(GL_QUADS);
+
+    glNormal3f(0, 0, 1.0);
+    //devant
+    glVertex3f(-m, m, c);
+    glVertex3f(m, m, c);
+    glVertex3f(m, -m, c);
+    glVertex3f(-m, -m, c);
+
+    glNormal3f(0, 0, -1.0);
+    //arriere
+    glVertex3f(-m, m, -m);
+    glVertex3f(m, m, -m / 5);
+    glVertex3f(m, -m, -m / 5);
+    glVertex3f(-m, -m, -m);
+
+    glNormal3f(-1.0, 0, 0.0);
+    //gauche
+    glVertex3f(-m, m, c);
+    glVertex3f(-m, m, -m);
+    glVertex3f(-m, -m, -m);
+    glVertex3f(-m, -m, c);
+
+    glNormal3f(1.0, 0, 0.0);
+    //droite
+    glVertex3f(m, m, c);
+    glVertex3f(m, -m, c);
+    glVertex3f(m, -m, -m / 5);
+    glVertex3f(m, m, -m / 5);
+
+    glNormal3f(0.0, 1.0, 0.0);
+    //dessus
+    glVertex3f(-m, m, c);
+    glVertex3f(m, m, c);
+    glVertex3f(m, m, -m / 5);
+    glVertex3f(-m, m, -m);
+
+    glNormal3f(0.0, -1.0, 0.0);
+    //dessous
+    glVertex3f(-m, -m, c);
+    glVertex3f(m, -m, c);
+    glVertex3f(m, -m, -m / 5);
+    glVertex3f(-m, -m, -m);
+
+    glEnd();
+}
+
+void Vaisseau::mySolidCylindre(GLdouble base, GLdouble height, GLint slices, GLint stacks) {
+    GLUquadricObj* theQuadric;
+
+    theQuadric = gluNewQuadric();
+
+    gluQuadricDrawStyle(theQuadric, GLU_FILL);
+    gluQuadricNormals(theQuadric, GLU_SMOOTH);
+    gluCylinder(theQuadric, base, base, height, slices, stacks);
+
+    gluDeleteQuadric(theQuadric);
+}
+
+void Vaisseau::mySolidCone(GLdouble base, GLdouble height, GLint slices, GLint stacks) {
+    glutSolidCone(base, height, slices, stacks);
+}
+
+void Vaisseau::mySolidShipWing(double c) {
+    glPushMatrix();
+    Quadrilatere(c);
+    glTranslatef(0.0f, 0.0f, c);
+    mySolidCone(c/2, c, 50, 50);
+    glPopMatrix();
+}
+
+void Vaisseau::mySolidSpaceShipBody(GLdouble base, GLdouble height, GLint slices, GLint stacks) {
+    glutSolidSphere(base, 50, 50);
+    mySolidCylindre(base, height, 50, 50);
+    glTranslatef(0.0f, 0.0f, height);
+    glutSolidSphere(base, 50, 50);
+}
+
+void Vaisseau::mySolidSpaceShip(double c) {
+    glPushMatrix();
+    mySolidSpaceShipBody(c, c*3, 50, 50);     //Main du vaisseau
+
+    glPushMatrix();
+    glTranslatef(0.0f, c*1.25f, 0.0f);
+    glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
+    mySolidVaisseau(c*1.5f);                //Aileron du vaisseau
+    glPopMatrix();
+    glPushMatrix();
+    glTranslatef(c*1.25f, 0.0f, -c);
+    mySolidShipWing(c*1.25f);                   //Aile droite
+    glTranslatef(-c*2.5f, 0.0f, 0.0f);
+    glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
+    mySolidShipWing(c*1.25f);                   //Aille gauche
+    glPopMatrix();
+    glPopMatrix();
+}

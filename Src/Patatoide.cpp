@@ -13,7 +13,7 @@ void Patatoide::myPatatoide(double c) {
     glVertex3f(-m, -m, m);
 
     glNormal3f(0, 0, -1.0);
-    //arrire
+    //arriere
     glVertex3f(-m, m, -m);
     glVertex3f(m, m, -m);
     glVertex3f(m, -m, -m);
