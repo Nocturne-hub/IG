@@ -63,23 +63,25 @@ static void init(void) {
 static void scene(void) {
     glPushMatrix();
         glPushMatrix();
+            glTranslatef(5.0f, 0.0f, 0.0f);
             glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
             p.myPatatoide(1.5f);
         glPopMatrix();
 
         glPushMatrix();
+            glTranslatef(5.0f, 0.0f, 0.0f);
             glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
             a.myPrecious(0.1, 3.0, 18, 72);
         glPopMatrix();
 
         glPushMatrix();
-        glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ());
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
-        //v.mySolidVaisseau(2.0f);
-        
+            glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ());
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
+            //v.mySolidVaisseau(2.0f);
+            v.mySolidSpaceShip(1.0f);
         glPopMatrix();
-        glTranslatef(5.0f, 0.0f, 0.0f);
-        v.mySolidSpaceShip(1.0f);
+        
+        
    glPopMatrix();
 }
 

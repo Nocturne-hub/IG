@@ -93,7 +93,7 @@ void Vaisseau::initTexture(void) {
       //int ry = 16;
       //unsigned char *img = image(rx,ry);
 
-        char* nomFichier = "textureVaisseau5.png";
+        char* nomFichier = "textureVaisseau1.png";
         int rx;
         int ry;
         printf("%s\n", nomFichier);
@@ -107,7 +107,7 @@ void Vaisseau::initTexture(void) {
             printf("Adresse         : %p\n", img);
         }
         printf("\n");
-        getchar();
+        //getchar();
 
         if (img) {
             glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
@@ -199,65 +199,78 @@ void Vaisseau::Quadrilatere(double c) {
     glEnd();
 }
 
-void Vaisseau::mySolidCylindre(double hauteur, double rayon, int ns) {
-    glPushMatrix();
-    hauteur /= 2.0F;
-    glBegin(GL_QUAD_STRIP);
-    for (int i = 0; i <= ns; i++) {
-        float rp = (float)i / ns;
-        float a = 2.0 * PI * rp;
-        float cs = cos(a);
-        float sn = -sin(a);
-        glNormal3f(cs, 0.0F, sn);
-        float x = rayon * cs;
-        float z = rayon * sn;
-        glTexCoord2f(rp, 1.0F);
-        glVertex3f(x, hauteur, z);
-        glTexCoord2f(rp, 0.0F);
-        glVertex3f(x, -hauteur, z);
-    }
-    glEnd();
-    glPopMatrix();
-}
-   
-void Vaisseau::mySolidCone(GLdouble base, GLdouble height, GLint slices, GLint stacks) {
-    glutSolidCone(base, height, slices, stacks);
+void Vaisseau::mySolidCylindre(GLdouble base, GLdouble height, GLint slices, GLint stacks) {
+    GLUquadricObj* theQuadric;
+    theQuadric = gluNewQuadric();
+    gluQuadricDrawStyle(theQuadric, GLU_FILL);
+    gluQuadricTexture(theQuadric, TRUE);
+    gluQuadricNormals(theQuadric, GLU_SMOOTH);
+    gluCylinder(theQuadric, base, base, height, slices, stacks);
+    gluDeleteQuadric(theQuadric);
 }
 
-void Vaisseau::mySolidShipWing(double c) {
+void Vaisseau::mySolidCone(GLdouble base, GLdouble height, GLint slices, GLint stacks) {
+    GLUquadricObj* cone = NULL;
+    cone = gluNewQuadric();
+    gluQuadricDrawStyle(cone, GLU_FILL);
+    gluQuadricTexture(cone, TRUE);
+    gluQuadricNormals(cone, GLU_SMOOTH);
+    gluCylinder(cone, base, 0.0f, height, slices, stacks);
+    gluDeleteQuadric(cone);
+}
+
+void Vaisseau::mySolidShipWing(double c, bool rigth) {
     glPushMatrix();
-    Quadrilatere(c);
-    glTranslatef(0.0f, 0.0f, c);
-    mySolidCone(c/2, c, 50, 50);
+    if (rigth) {
+        glTranslatef(-c * 2.0f, 0.0f, 0.0f);
+        glPushMatrix();
+        glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
+        Quadrilatere(c);
+        glPopMatrix();
+        glTranslatef(0.0f, 0.0f, c);
+        mySolidCone(c / 2, c, 50, 50);
+    }
+    else {
+        Quadrilatere(c);
+        glTranslatef(0.0f, 0.0f, c);
+        mySolidCone(c / 2, c, 50, 50);
+    }
     glPopMatrix();
+    
+}
+
+void Vaisseau::mySolidSphere(GLdouble height, GLint slices, GLint stacks) {
+    GLUquadricObj* sphere = NULL;
+    sphere = gluNewQuadric();
+    gluQuadricDrawStyle(sphere, GLU_FILL);
+    gluQuadricTexture(sphere, TRUE);
+    gluQuadricNormals(sphere, GLU_SMOOTH);
+    gluSphere(sphere, height, slices, stacks);
+    gluDeleteQuadric(sphere);
 }
 
 void Vaisseau::mySolidSpaceShipBody(GLdouble base, GLdouble height, GLint slices, GLint stacks) {
-    glutSolidSphere(base, 50, 50);
+    mySolidSphere(base, 50, 50);
     glPushMatrix();
-    glTranslatef(0.0f, 0.0f, height/2);
-    glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-    mySolidCylindre(height, base, 50);
+    mySolidCylindre(base, height, 500, 50);
     glPopMatrix();
     glTranslatef(0.0f, 0.0f, height);
-    glutSolidSphere(base, 50, 50);
+    mySolidSphere(base, 50, 50);
 }
 
 void Vaisseau::mySolidSpaceShip(double c) {
     glPushMatrix();
+    glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
     mySolidSpaceShipBody(c, c*3, 50, 50);     //Main du vaisseau
 
     glPushMatrix();
-    glTranslatef(0.0f, c*1.25f, -0.05f);
-    glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
+    glTranslatef(0.0f, -c*1.25f, -0.05f);
     mySolidVaisseau(c*1.5f);                //Aileron du vaisseau
     glPopMatrix();
     glPushMatrix();
     glTranslatef(c*1.25f, 0.0f, -c);
-    mySolidShipWing(c*1.25f);                   //Aile droite
-    glTranslatef(-c*2.5f, 0.0f, 0.0f);
-    glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
-    mySolidShipWing(c*1.25f);                   //Aille gauche
+    mySolidShipWing(c*1.25f, true);                   //Aile droite
+    mySolidShipWing(c*1.25f, false);                   //Aille gauche
     glPopMatrix();
     glPopMatrix();
 }
