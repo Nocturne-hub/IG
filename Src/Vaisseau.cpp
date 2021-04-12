@@ -93,7 +93,7 @@ void Vaisseau::initTexture(void) {
       //int ry = 16;
       //unsigned char *img = image(rx,ry);
 
-        char* nomFichier = "textureVaisseau.png";
+        char* nomFichier = "textureVaisseau5.png";
         int rx;
         int ry;
         printf("%s\n", nomFichier);
@@ -132,66 +132,66 @@ void Vaisseau::Quadrilatere(double c) {
 
     glNormal3f(0, 0, 1.0);
     //devant
-    glTexCoord2f(0, 1);
+    glTexCoord2f(1, 0);
     glVertex3f(-m, m, c);
     glTexCoord2f(1, 1);
     glVertex3f(m, m, c);
-    glTexCoord2f(1, 0);
+    glTexCoord2f(0, 1);
     glVertex3f(m, -m, c);
     glTexCoord2f(0, 0);
     glVertex3f(-m, -m, c);
 
     glNormal3f(0, 0, -1.0);
     //arriere
-    glTexCoord2f(0, 1);
+    glTexCoord2f(1, 0);
     glVertex3f(-m, m, -m);
     glTexCoord2f(1, 1);
     glVertex3f(m, m, -m / 5);
-    glTexCoord2f(1, 0);
+    glTexCoord2f(0, 1);
     glVertex3f(m, -m, -m / 5);
     glTexCoord2f(0, 0);
     glVertex3f(-m, -m, -m);
 
     glNormal3f(-1.0, 0, 0.0);
     //gauche
-    glTexCoord2f(0, 1);
+    glTexCoord2f(1, 0);
     glVertex3f(-m, m, c);
     glTexCoord2f(1, 1);
     glVertex3f(-m, m, -m);
-    glTexCoord2f(1, 0);
+    glTexCoord2f(0, 1);
     glVertex3f(-m, -m, -m);
     glTexCoord2f(0, 0);
     glVertex3f(-m, -m, c);
 
     glNormal3f(1.0, 0, 0.0);
     //droite
-    glTexCoord2f(0, 1);
+    glTexCoord2f(1, 0);
     glVertex3f(m, m, c);
     glTexCoord2f(1, 1);
     glVertex3f(m, -m, c);
-    glTexCoord2f(1, 0);
+    glTexCoord2f(0, 1);
     glVertex3f(m, -m, -m / 5);
     glTexCoord2f(0, 0);
     glVertex3f(m, m, -m / 5);
 
     glNormal3f(0.0, 1.0, 0.0);
     //dessus
-    glTexCoord2f(0, 1);
+    glTexCoord2f(1, 0);
     glVertex3f(-m, m, c);
     glTexCoord2f(1, 1);
     glVertex3f(m, m, c);
-    glTexCoord2f(1, 0);
+    glTexCoord2f(0, 1);
     glVertex3f(m, m, -m / 5);
     glTexCoord2f(0, 0);
     glVertex3f(-m, m, -m);
 
     glNormal3f(0.0, -1.0, 0.0);
     //dessous
-    glTexCoord2f(0, 1);
+    glTexCoord2f(1, 0);
     glVertex3f(-m, -m, c);
     glTexCoord2f(1, 1);
     glVertex3f(m, -m, c);
-    glTexCoord2f(1, 0);
+    glTexCoord2f(0, 1);
     glVertex3f(m, -m, -m / 5);
     glTexCoord2f(0, 0);
     glVertex3f(-m, -m, -m);
@@ -199,29 +199,27 @@ void Vaisseau::Quadrilatere(double c) {
     glEnd();
 }
 
-
 void Vaisseau::mySolidCylindre(double hauteur, double rayon, int ns) {
-        glPushMatrix();
-        hauteur /= 2.0F;
-        glBegin(GL_QUAD_STRIP);
-        for (int i = 0; i <= ns; i++) {
-            float rp = (float)i / ns;
-            float a = 2.0 * PI * rp;
-            float cs = cos(a);
-            float sn = -sin(a);
-            glNormal3f(cs, 0.0F, sn);
-            float x = rayon * cs;
-            float z = rayon * sn;
-            glTexCoord2f(rp, 1.0F);
-            glVertex3f(x, hauteur, z);
-            glTexCoord2f(rp, 0.0F);
-            glVertex3f(x, -hauteur, z);
-        }
-        glEnd();
-        glPopMatrix();
+    glPushMatrix();
+    hauteur /= 2.0F;
+    glBegin(GL_QUAD_STRIP);
+    for (int i = 0; i <= ns; i++) {
+        float rp = (float)i / ns;
+        float a = 2.0 * PI * rp;
+        float cs = cos(a);
+        float sn = -sin(a);
+        glNormal3f(cs, 0.0F, sn);
+        float x = rayon * cs;
+        float z = rayon * sn;
+        glTexCoord2f(rp, 1.0F);
+        glVertex3f(x, hauteur, z);
+        glTexCoord2f(rp, 0.0F);
+        glVertex3f(x, -hauteur, z);
     }
-
-
+    glEnd();
+    glPopMatrix();
+}
+   
 void Vaisseau::mySolidCone(GLdouble base, GLdouble height, GLint slices, GLint stacks) {
     glutSolidCone(base, height, slices, stacks);
 }
@@ -236,7 +234,11 @@ void Vaisseau::mySolidShipWing(double c) {
 
 void Vaisseau::mySolidSpaceShipBody(GLdouble base, GLdouble height, GLint slices, GLint stacks) {
     glutSolidSphere(base, 50, 50);
-    mySolidCylindre(base, height, 50);
+    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, height/2);
+    glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+    mySolidCylindre(height, base, 50);
+    glPopMatrix();
     glTranslatef(0.0f, 0.0f, height);
     glutSolidSphere(base, 50, 50);
 }
@@ -246,7 +248,7 @@ void Vaisseau::mySolidSpaceShip(double c) {
     mySolidSpaceShipBody(c, c*3, 50, 50);     //Main du vaisseau
 
     glPushMatrix();
-    glTranslatef(0.0f, c*1.25f, 0.0f);
+    glTranslatef(0.0f, c*1.25f, -0.05f);
     glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
     mySolidVaisseau(c*1.5f);                //Aileron du vaisseau
     glPopMatrix();

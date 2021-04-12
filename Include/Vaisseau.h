@@ -30,7 +30,7 @@ class Vaisseau {
 		void mySolidShipWing(double c);
 		void mySolidSpaceShipBody(GLdouble base, GLdouble height, GLint slices, GLint stacks);
 		void mySolidCone(GLdouble base, GLdouble height, GLint slices, GLint stacks);
-		void mySolidCylindre(double hauteur, double rayon, int ns);
+		void mySolidCylindre(double hauteur, double rayon, int nbFTube);
 		void Quadrilatere(double c);
 
 
