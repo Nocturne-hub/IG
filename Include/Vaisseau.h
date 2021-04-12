@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <math.h>
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 
 #include "Texture/ChargePngFile.h"
 
+#define PI 3.1415926535898
 class Vaisseau {
 	private:
 		float posX = 0.0f;
@@ -28,7 +30,7 @@ class Vaisseau {
 		void mySolidShipWing(double c);
 		void mySolidSpaceShipBody(GLdouble base, GLdouble height, GLint slices, GLint stacks);
 		void mySolidCone(GLdouble base, GLdouble height, GLint slices, GLint stacks);
-		void mySolidCylindre(GLdouble base, GLdouble height, GLint slices, GLint stacks);
+		void mySolidCylindre(double hauteur, double rayon, int ns);
 		void Quadrilatere(double c);
 
 

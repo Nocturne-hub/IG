@@ -175,9 +175,6 @@
     <ClInclude Include="..\..\Src\Texture\PNG\zlib.h" />
     <ClInclude Include="..\..\Src\Texture\PNG\zutil.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\Ressources\textureVaisseau.jpg" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

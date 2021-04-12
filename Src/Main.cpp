@@ -73,12 +73,12 @@ static void scene(void) {
         glPopMatrix();
 
         glPushMatrix();
-        v.setPosX(5.0f);
         glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ());
         glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
-        v.mySolidVaisseau(2.0f);
+        //v.mySolidVaisseau(2.0f);
+        
         glPopMatrix();
-
+        glTranslatef(5.0f, 0.0f, 0.0f);
         v.mySolidSpaceShip(1.0f);
    glPopMatrix();
 }

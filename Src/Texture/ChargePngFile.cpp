@@ -25,7 +25,6 @@
  * @version 1.0, 12/01/06
  */
 unsigned char *chargeImagePng(char *filename,int *rx,int *ry) {
-    printf("Dans charge %s\n", filename);
   struct image img;      
   unsigned char red,green,blue;
   if ( chargeImagePng(filename,&img,&red,&green,&blue) ) {
@@ -43,7 +42,6 @@ unsigned char *chargeImagePng(char *filename,int *rx,int *ry) {
     desallocationImage(&img);
     return(image); }
     else {
-      printf("Je vais dans le else\n");
     *rx = *ry = 0;
     return(NULL); }
 }
