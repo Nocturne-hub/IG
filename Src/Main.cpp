@@ -1,6 +1,8 @@
 #include "Vaisseau.h"
 #include "Patatoide.h"
 #include "Anneau.h"
+#include <time.h>
+#include <iostream>
 
 #define PI 3.1415926535898
 
@@ -26,6 +28,11 @@ static const float bleu[] = { 0.0F,0.0F,1.0F,1.0F };
 
 static int rz = 0;
 static int mouseX = 0;
+
+
+static float posAnneauX = 0.0;
+static float posAnneauZ = -5.0;
+static float speedAnneauZ = 0.1;
 
 
 static bool texture = true;
@@ -63,13 +70,13 @@ static void init(void) {
 static void scene(void) {
     glPushMatrix();
         glPushMatrix();
-            glTranslatef(5.0f, 0.0f, 0.0f);
+            glTranslatef(0.0f, 0.0f, -5.0f);
             glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
             p.myPatatoide(1.5f);
         glPopMatrix();
 
         glPushMatrix();
-            glTranslatef(5.0f, 0.0f, 0.0f);
+            glTranslatef(posAnneauX, 0.0f, posAnneauZ);
             glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
             a.myPrecious(0.1, 3.0, 18, 72);
         glPopMatrix();
@@ -94,7 +101,6 @@ static void display(void) {
     else
         glDisable(GL_TEXTURE_2D);
     int rotate = gauche ? -1.0 : 1.0;
-    printf("D\n");
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     /*const GLfloat light0_position[] = { 0.0,0.0,0.0,1.0 };
     const GLfloat light1_position[] = { -1.0,1.0,1.0,0.0 };
@@ -106,18 +112,21 @@ static void display(void) {
 
     float cameraPosX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraPosY = firstPerson ? v.getPosY() : v.getPosY() + 1.0;
-    float cameraPosZ = firstPerson ? -v.getPosZ() : -(v.getPosZ() - 1.0);
+    float cameraPosZ = firstPerson ? v.getPosZ() -2.0 : -(v.getPosZ() - 1.0);
 
     float cameraLookX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraLookY = firstPerson ? v.getPosY() : v.getPosY();
-    float cameraLookZ = firstPerson ? -v.getPosZ() : -(v.getPosZ() + 0.5);
+    float cameraLookZ = firstPerson ? v.getPosZ() - 3.0 : -(v.getPosZ() + 0.5);
 
 
     printf("Vaisseau x,y,z : %f %f %f\n", v.getPosX(), v.getPosY(), v.getPosZ());
     printf("Camera x,y,z : %f %f %f\n", cameraPosX, cameraPosY, cameraPosZ);
     printf("Camera look x,y,z : %f %f %f\n", cameraLookX, cameraLookY, cameraLookZ);
 
-    gluLookAt(cameraPosX, cameraPosY, cameraPosZ, cameraLookX, cameraLookY, cameraLookZ, 0.0, 1.0, 0.25);
+    if (!firstPerson) {
+        gluLookAt(0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    }
+    gluLookAt(cameraPosX, cameraPosY, cameraPosZ, cameraLookX, cameraLookY, cameraLookZ, 0.0, 1.0, 0.0);
 
     if (filDeFer)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -148,7 +157,8 @@ static void reshape(int wx, int wy) {
     glViewport(0, 0, wx, wy);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
+    //glOrtho(-10.0, 10.0, -10.0, 10.0, -100.0, 100.0);
+    gluPerspective(70.0F, (float)wx / wy, 1.0, 40.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -157,7 +167,17 @@ static void reshape(int wx, int wy) {
 /* n'est en file d'attente                      */
 
 static void idle(void) {
-    angle += 0.1f;
+    //angle += 0.1;
+    if (posAnneauZ > 6)
+    {
+        posAnneauZ = -10.0;
+        //srand((unsigned int)time(NULL));
+        posAnneauX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
+        printf("PosX = %f", posAnneauX);
+    }
+    else {
+        posAnneauZ += speedAnneauZ;
+    }
     glutPostRedisplay();
 }
 
