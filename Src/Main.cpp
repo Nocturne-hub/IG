@@ -16,7 +16,7 @@ static float angle = 0.0;
 static bool animation = false;
 static bool gauche = true;
 static bool isMouse = false;
-static bool firstPerson = false;
+static bool firstPerson = true;
 
 static const float blanc[] = { 1.0F,1.0F,1.0F,1.0F };
 static const float jaune[] = { 1.0F,1.0F,0.0F,1.0F };
@@ -63,7 +63,7 @@ static void init(void) {
 static void scene(void) {
     glPushMatrix();
         glPushMatrix();
-            glTranslatef(5.0f, 0.0f, 0.0f);
+            glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ()-5.0);
             glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
             p.myPatatoide(1.5f);
         glPopMatrix();
@@ -77,7 +77,6 @@ static void scene(void) {
         glPushMatrix();
             glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ());
             glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
-            //v.mySolidVaisseau(2.0f);
             v.mySolidSpaceShip(1.0f);
         glPopMatrix();
         
@@ -106,18 +105,18 @@ static void display(void) {
 
     float cameraPosX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraPosY = firstPerson ? v.getPosY() : v.getPosY() + 1.0;
-    float cameraPosZ = firstPerson ? -v.getPosZ() : -(v.getPosZ() - 1.0);
+    float cameraPosZ = firstPerson ? -(v.getPosZ() + 1.0) : -(v.getPosZ() - 1.0);
 
     float cameraLookX = firstPerson ? v.getPosX() : v.getPosX();
-    float cameraLookY = firstPerson ? v.getPosY() : v.getPosY();
-    float cameraLookZ = firstPerson ? -v.getPosZ() : -(v.getPosZ() + 0.5);
+    float cameraLookY = firstPerson ? v.getPosY() + 1.0: v.getPosY();
+    float cameraLookZ = firstPerson ? -(v.getPosZ() + 5.0) : -(v.getPosZ() + 0.5);
 
 
     printf("Vaisseau x,y,z : %f %f %f\n", v.getPosX(), v.getPosY(), v.getPosZ());
     printf("Camera x,y,z : %f %f %f\n", cameraPosX, cameraPosY, cameraPosZ);
     printf("Camera look x,y,z : %f %f %f\n", cameraLookX, cameraLookY, cameraLookZ);
 
-    gluLookAt(cameraPosX, cameraPosY, cameraPosZ, cameraLookX, cameraLookY, cameraLookZ, 0.0, 1.0, 0.25);
+    gluLookAt(cameraPosX, cameraPosY, cameraPosZ, cameraLookX, cameraLookY, cameraLookZ, 0.0, 1.0, 0.0);
 
     if (filDeFer)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

@@ -246,20 +246,21 @@ void Vaisseau::mySolidSphere(GLdouble height, GLint slices, GLint stacks) {
 }
 
 void Vaisseau::mySolidSpaceShipBody(GLdouble base, GLdouble height, GLint slices, GLint stacks) {
-    mySolidSphere(base, 50, 50);
     glPushMatrix();
+    mySolidSphere(base, 50, 50);
     mySolidCylindre(base, height, 500, 50);
-    glPopMatrix();
     glTranslatef(0.0f, 0.0f, height);
     mySolidSphere(base, 50, 50);
+    glPopMatrix();
 }
 
 void Vaisseau::mySolidSpaceShip(double c) {
     glPushMatrix();
-    glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
-    mySolidSpaceShipBody(c, c*3, 50, 50);     //Main du vaisseau
-
+    glTranslatef(0.0f, 0.0f, c * 3);
     glPushMatrix();
+    glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+    mySolidSpaceShipBody(c, c*3, 50, 50);     //Main du vaisseau
+    glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
     glTranslatef(0.0f, -c*1.25f, -0.05f);
     mySolidVaisseau(c*1.5f);                //Aileron du vaisseau
     glPopMatrix();
