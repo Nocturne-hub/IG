@@ -28,7 +28,7 @@ static int rz = 0;
 static int mouseX = 0;
 
 
-static int texture = 1;
+static bool texture = true;
 
 Anneau a;
 Patatoide p;
@@ -213,6 +213,10 @@ static void special(int specialKey, int x, int y) {
         break;
     case GLUT_KEY_F1:
         firstPerson = !firstPerson;
+        glutPostRedisplay();
+        break;
+    case GLUT_KEY_F2:
+        texture = !texture;
         glutPostRedisplay();
         break;
     }
