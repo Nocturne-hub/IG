@@ -89,10 +89,7 @@ void Vaisseau::initTexture(void) {
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
-    { //int rx = 16;
-      //int ry = 16;
-      //unsigned char *img = image(rx,ry);
-
+    { 
         char* nomFichier = "textureVaisseau1.png";
         int rx;
         int ry;
@@ -107,7 +104,6 @@ void Vaisseau::initTexture(void) {
             printf("Adresse         : %p\n", img);
         }
         printf("\n");
-        //getchar();
 
         if (img) {
             glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
