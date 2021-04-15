@@ -8,6 +8,7 @@
 #include <GL/glu.h>
 
 #include "Texture/ChargePngFile.h"
+#include "Patatoide.h"
 
 #define PI 3.1415926535898
 class Vaisseau {
@@ -33,5 +34,6 @@ class Vaisseau {
 		void mySolidCylindre(GLdouble base, GLdouble height, GLint slices, GLint stacks);
 		void Quadrilatere(double c);
 		void mySolidSphere(GLdouble height, GLint slices, GLint stacks);
+		bool enCollision(Patatoide p);
 };
 

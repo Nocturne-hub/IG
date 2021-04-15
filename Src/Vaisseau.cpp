@@ -25,6 +25,10 @@ void Vaisseau::setPosZ(float z) {
     posZ = z;
 }
 
+bool Vaisseau::enCollision(Patatoide p) {
+    return true;
+}
+
 void Vaisseau::mySolidVaisseau(float c) {
     float m = c / 2;
 
