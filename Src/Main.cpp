@@ -28,12 +28,11 @@ static const float bleu[] = { 0.0F,0.0F,1.0F,1.0F };
 
 static int rz = 0;
 static int mouseX = 0;
-
+static bool touches[] = { false, false, false, false };
 
 static float posAnneauX = 0.0;
 static float posAnneauZ = -5.0;
 static float speedAnneauZ = 0.1;
-
 
 static bool texture = true;
 
@@ -134,7 +133,7 @@ static void display(void) {
     glRotatef(angle, rotate, 0, 0);
     glRotatef(rz, 0, 1.0, 0);
 
-
+    
     scene();
     glPopMatrix();
     glFlush();
@@ -204,6 +203,22 @@ static void keyboard(unsigned char key, int x, int y) {
     }
 }
 
+static void deplacement() {
+    if (touches[0]) {
+        v.setPosX(v.getPosX() - 0.2f);
+    }
+    if (touches[1]) {
+        v.setPosX(v.getPosX() + 0.2f);
+    }
+    if (touches[2]) {
+        v.setPosY(v.getPosY() + 0.2f);
+    }
+    if (touches[3]) {
+        v.setPosY(v.getPosY() - 0.2f);
+    }
+    glutPostRedisplay();
+}
+
 /* Fonction executee lors de l'appui            */
 /* d'une touche speciale du clavier :           */
 /*   - touches de curseur                       */
@@ -213,20 +228,20 @@ static void special(int specialKey, int x, int y) {
     printf("S  %4d %4d %4d\n", specialKey, x, y);
     switch (specialKey) {
     case GLUT_KEY_LEFT:
-        v.setPosX(v.getPosX() - 0.5f);
-        glutPostRedisplay();
+        touches[0] = true;
+        deplacement();
         break;
     case GLUT_KEY_RIGHT:
-        v.setPosX(v.getPosX() + 0.5f);
-        glutPostRedisplay();
+        touches[1] = true;
+        deplacement();
         break;
     case GLUT_KEY_UP:
-        v.setPosY(v.getPosY() + 0.5f);
-        glutPostRedisplay();
+        touches[2] = true;
+        deplacement();
         break;
     case GLUT_KEY_DOWN:
-        v.setPosY(v.getPosY() - 0.5f);
-        glutPostRedisplay();
+        touches[3] = true;
+        deplacement();
         break;
     case GLUT_KEY_F1:
         firstPerson = !firstPerson;
@@ -235,6 +250,23 @@ static void special(int specialKey, int x, int y) {
     case GLUT_KEY_F2:
         texture = !texture;
         glutPostRedisplay();
+        break;
+    }
+}
+
+static void specialUp(int specialKey, int x, int y) {
+    switch (specialKey) {
+    case GLUT_KEY_LEFT:
+        touches[0] = false;
+        break;
+    case GLUT_KEY_RIGHT:
+        touches[1] = false;
+        break;
+    case GLUT_KEY_UP:
+        touches[2] = false;
+        break;
+    case GLUT_KEY_DOWN:
+        touches[3] = false;
         break;
     }
 }
@@ -289,6 +321,7 @@ int main(int argc, char** argv) {
     init();
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(special);
+    glutSpecialUpFunc(specialUp);
     glutMouseFunc(mouse);
     glutMotionFunc(mouseMotion);
     //glutPassiveMotionFunc(passiveMouseMotion);
