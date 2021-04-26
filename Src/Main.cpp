@@ -1,6 +1,7 @@
 #include "Vaisseau.h"
 #include "Patatoide.h"
 #include "Anneau.h"
+#include "Skybox.h"
 #include <time.h>
 #include <iostream>
 
@@ -36,9 +37,12 @@ static float speedAnneauZ = 0.1;
 
 static bool texture = true;
 
+static unsigned int texturesSkyBox[6];
+
 Anneau a;
 Patatoide p;
 Vaisseau v;
+Skybox skybox;
 
 
 /* Fonction d'initialisation des parametres     */
@@ -62,6 +66,9 @@ static void init(void) {
     v.initTexture();
 }
 
+static void initSkybox() {
+    int rx, ry;
+}
 
 
 /* Scene dessinee                               */
@@ -100,6 +107,15 @@ static void display(void) {
         glDisable(GL_TEXTURE_2D);
     int rotate = gauche ? -1.0 : 1.0;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_CUBE_MAP_ARB);
+    glDisable(GL_LIGHTING);
+    glDepthMask(GL_FALSE);
+    skybox.drawSkyBox(v.getPosX(), v.getPosX(),1);
+    
+
     /*const GLfloat light0_position[] = { 0.0,0.0,0.0,1.0 };
     const GLfloat light1_position[] = { -1.0,1.0,1.0,0.0 };
     const GLfloat light2_position[] = { 1.0,-1.0,1.0,0.0 };
