@@ -20,6 +20,7 @@ static bool animation = false;
 static bool gauche = true;
 static bool isMouse = false;
 static bool firstPerson = true;
+static bool lumiere = true;
 
 static const float blanc[] = { 1.0F,1.0F,1.0F,1.0F };
 static const float jaune[] = { 1.0F,1.0F,0.0F,1.0F };
@@ -37,7 +38,10 @@ static float speedAnneauZ = 0.1;
 
 static bool texture = true;
 
+
 static unsigned int texturesSkyBox[6];
+
+static unsigned int textureID[3] = { 0,0,0 };
 
 Anneau a;
 Patatoide p;
@@ -52,9 +56,9 @@ Skybox skybox;
 static void init(void) {
     const GLfloat shininess[] = { 50.0 };
     glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, rouge);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, jaune);
-    glLightfv(GL_LIGHT2, GL_DIFFUSE, bleu);
+    //glLightfv(GL_LIGHT0, GL_DIFFUSE, rouge);
+    //glLightfv(GL_LIGHT1, GL_DIFFUSE, jaune);
+    //glLightfv(GL_LIGHT2, GL_DIFFUSE, bleu);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
@@ -63,12 +67,20 @@ static void init(void) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
     glEnable(GL_AUTO_NORMAL);
-    v.initTexture();
+    glGenTextures(2, textureID);
+    v.chargementTexture("textureVaisseau.png", textureID[0]);
+    v.texture = textureID[0];
+    p.chargementTexture("CAILLOU2.png", textureID[1]);
+    p.texture = textureID[1];
+
+    //sb.chargementTexture("Emoji3.png", textureID[2]);
+    //sb.texture = textureID[2];
 }
 
 static void initSkybox() {
     int rx, ry;
 }
+
 
 
 /* Scene dessinee                               */
@@ -77,19 +89,19 @@ static void scene(void) {
     glPushMatrix();
         glPushMatrix();
             glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ()-5.0);
-            glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
+            //glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
             p.myPatatoide(1.5f);
         glPopMatrix();
 
         glPushMatrix();
             glTranslatef(posAnneauX, 0.0f, posAnneauZ);
-            glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
+           // glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
             a.myPrecious(0.1, 3.0, 18, 72);
         glPopMatrix();
 
         glPushMatrix();
             glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ());
-            glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
+            //glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
             v.mySolidSpaceShip(1.0f);
         glPopMatrix();
         
@@ -101,10 +113,18 @@ static void scene(void) {
 /* de la fenetre de dessin                      */
 
 static void display(void) {
-    if (texture)
+    if (texture) {
         glEnable(GL_TEXTURE_2D);
-    else
+    }else {
         glDisable(GL_TEXTURE_2D);
+    }
+
+    if (lumiere) {
+        glEnable(GL_LIGHTING);
+    }
+    else {
+        glDisable(GL_LIGHTING);
+    }
     int rotate = gauche ? -1.0 : 1.0;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -125,8 +145,8 @@ static void display(void) {
     glPushMatrix();
 
     float cameraPosX = firstPerson ? v.getPosX() : v.getPosX();
-    float cameraPosY = firstPerson ? v.getPosY() : v.getPosY() + 1.0;
-    float cameraPosZ = firstPerson ? v.getPosZ() -2.0 : -(v.getPosZ() - 1.0);
+    float cameraPosY = firstPerson ? v.getPosY() : v.getPosY() + 5.0;
+    float cameraPosZ = firstPerson ? v.getPosZ() -2.0 : v.getPosZ() + 10.0;
 
     float cameraLookX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraLookY = firstPerson ? v.getPosY() : v.getPosY();
@@ -135,11 +155,8 @@ static void display(void) {
     printf("Camera x,y,z : %f %f %f\n", cameraPosX, cameraPosY, cameraPosZ);
     printf("Camera look x,y,z : %f %f %f\n", cameraLookX, cameraLookY, cameraLookZ);
 
-    if (!firstPerson) {
-        gluLookAt(0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-    }
-    gluLookAt(cameraPosX, cameraPosY, cameraPosZ, cameraLookX, cameraLookY, cameraLookZ, 0.0, 1.0, 0.0);
-
+    gluLookAt(cameraPosX, cameraPosY, cameraPosZ, cameraLookX, cameraLookY, cameraLookZ, 0.0, 1.0, 1.0);
+    
     if (filDeFer)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     else
@@ -170,7 +187,7 @@ static void reshape(int wx, int wy) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     //glOrtho(-10.0, 10.0, -10.0, 10.0, -100.0, 100.0);
-    gluPerspective(70.0F, (float)wx / wy, 1.0, 40.0);
+    gluPerspective(70.0F, (float)wx / wy, 1.0, 400.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -267,6 +284,10 @@ static void special(int specialKey, int x, int y) {
         texture = !texture;
         glutPostRedisplay();
         break;
+    case GLUT_KEY_F3:
+        lumiere = !lumiere;
+        glutPostRedisplay();
+        break;
     }
 }
 
@@ -318,8 +339,6 @@ static void passiveMouseMotion(int x, int y) {
 /* lors de l'exécution de la fonction exit()    */
 
 static void clean(void) {
-    if (v.textureID != 0)
-        glDeleteTextures(1, &v.textureID);
     printf("Bye\n");
 }
 
