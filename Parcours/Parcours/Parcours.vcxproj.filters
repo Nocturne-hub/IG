@@ -162,6 +162,9 @@
     <ClCompile Include="..\..\Src\Texture\PNG\zutil.c">
       <Filter>Source Files\Coord3D\PNG</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Include\Vaisseau.h">
@@ -250,6 +253,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\Texture\PNG\zutil.h">
       <Filter>Source Files\Coord3D\PNG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Include\Skybox.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

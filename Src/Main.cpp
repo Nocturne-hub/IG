@@ -1,6 +1,9 @@
-#include "Vaisseau.h"
+ï»¿#include "Vaisseau.h"
 #include "Patatoide.h"
 #include "Anneau.h"
+#include "Skybox.h"
+#include <time.h>
+#include <iostream>
 
 #define PI 3.1415926535898
 
@@ -16,7 +19,8 @@ static float angle = 0.0;
 static bool animation = false;
 static bool gauche = true;
 static bool isMouse = false;
-static bool firstPerson = false;
+static bool firstPerson = true;
+static bool lumiere = true;
 
 static const float blanc[] = { 1.0F,1.0F,1.0F,1.0F };
 static const float jaune[] = { 1.0F,1.0F,0.0F,1.0F };
@@ -26,13 +30,23 @@ static const float bleu[] = { 0.0F,0.0F,1.0F,1.0F };
 
 static int rz = 0;
 static int mouseX = 0;
+static bool touches[] = { false, false, false, false };
 
+static float posAnneauX = 0.0;
+static float posAnneauZ = -5.0;
+static float speedAnneauZ = 0.1;
 
 static bool texture = true;
+
+
+static unsigned int texturesSkyBox[6];
+
+static unsigned int textureID[3] = { 0,0,0 };
 
 Anneau a;
 Patatoide p;
 Vaisseau v;
+Skybox skybox;
 
 
 /* Fonction d'initialisation des parametres     */
@@ -42,9 +56,9 @@ Vaisseau v;
 static void init(void) {
     const GLfloat shininess[] = { 50.0 };
     glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, rouge);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, jaune);
-    glLightfv(GL_LIGHT2, GL_DIFFUSE, bleu);
+    //glLightfv(GL_LIGHT0, GL_DIFFUSE, rouge);
+    //glLightfv(GL_LIGHT1, GL_DIFFUSE, jaune);
+    //glLightfv(GL_LIGHT2, GL_DIFFUSE, bleu);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
@@ -53,9 +67,20 @@ static void init(void) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
     glEnable(GL_AUTO_NORMAL);
-    v.initTexture();
+    glGenTextures(2, textureID);
+    v.chargementTexture("textureVaisseau.png", textureID[0]);
+    v.texture = textureID[0];
+    p.chargementTexture("CAILLOU2.png", textureID[1]);
+    p.texture = textureID[1];
 
+    //sb.chargementTexture("Emoji3.png", textureID[2]);
+    //sb.texture = textureID[2];
 }
+
+static void initSkybox() {
+    int rx, ry;
+}
+
 
 
 /* Scene dessinee                               */
@@ -63,27 +88,20 @@ static void init(void) {
 static void scene(void) {
     glPushMatrix();
         glPushMatrix();
-            glTranslatef(5.0f, 0.0f, 0.0f);
-            glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
+            glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ()-5.0);
+            //glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
             p.myPatatoide(1.5f);
         glPopMatrix();
 
         glPushMatrix();
-            glTranslatef(5.0f, 0.0f, -5.0f);
-            glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
-            p.myPatatoide(1.5f);
-        glPopMatrix();
-
-        glPushMatrix();
-            glTranslatef(5.0f, 0.0f, 0.0f);
-            glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
+            glTranslatef(posAnneauX, 0.0f, posAnneauZ);
+           // glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
             a.myPrecious(0.1, 3.0, 18, 72);
         glPopMatrix();
 
         glPushMatrix();
             glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ());
-            glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
-            //v.mySolidVaisseau(2.0f);
+            //glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
             v.mySolidSpaceShip(1.0f);
         glPopMatrix();
         
@@ -95,13 +113,29 @@ static void scene(void) {
 /* de la fenetre de dessin                      */
 
 static void display(void) {
-    if (texture)
+    if (texture) {
         glEnable(GL_TEXTURE_2D);
-    else
+    }else {
         glDisable(GL_TEXTURE_2D);
+    }
+
+    if (lumiere) {
+        glEnable(GL_LIGHTING);
+    }
+    else {
+        glDisable(GL_LIGHTING);
+    }
     int rotate = gauche ? -1.0 : 1.0;
-    printf("D\n");
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_CUBE_MAP_ARB);
+    glDisable(GL_LIGHTING);
+    glDepthMask(GL_FALSE);
+    skybox.drawSkyBox(v.getPosX(), v.getPosX(),1);
+    
+
     /*const GLfloat light0_position[] = { 0.0,0.0,0.0,1.0 };
     const GLfloat light1_position[] = { -1.0,1.0,1.0,0.0 };
     const GLfloat light2_position[] = { 1.0,-1.0,1.0,0.0 };
@@ -111,21 +145,18 @@ static void display(void) {
     glPushMatrix();
 
     float cameraPosX = firstPerson ? v.getPosX() : v.getPosX();
-    float cameraPosY = firstPerson ? v.getPosY() : v.getPosY() + 1.0;
-    float cameraPosZ = firstPerson ? -(v.getPosZ()+0.5) : -(v.getPosZ() - 1.0);
+    float cameraPosY = firstPerson ? v.getPosY() : v.getPosY() + 5.0;
+    float cameraPosZ = firstPerson ? v.getPosZ() -2.0 : v.getPosZ() + 10.0;
 
     float cameraLookX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraLookY = firstPerson ? v.getPosY() : v.getPosY();
-    float cameraLookZ = firstPerson ? -(v.getPosZ()+0.2) : -(v.getPosZ() + 0.5);
-
-
-
+    float cameraLookZ = firstPerson ? v.getPosZ() - 3.0 : -(v.getPosZ() + 0.5);
     printf("Vaisseau x,y,z : %f %f %f\n", v.getPosX(), v.getPosY(), v.getPosZ());
     printf("Camera x,y,z : %f %f %f\n", cameraPosX, cameraPosY, cameraPosZ);
     printf("Camera look x,y,z : %f %f %f\n", cameraLookX, cameraLookY, cameraLookZ);
 
-    gluLookAt(cameraPosX, cameraPosY, cameraPosZ, cameraLookX, cameraLookY, cameraLookZ, 0.0, 1.0, 0.0);
-
+    gluLookAt(cameraPosX, cameraPosY, cameraPosZ, cameraLookX, cameraLookY, cameraLookZ, 0.0, 1.0, 1.0);
+    
     if (filDeFer)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     else
@@ -155,7 +186,8 @@ static void reshape(int wx, int wy) {
     glViewport(0, 0, wx, wy);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-10.0, 10.0, -10.0, 10.0, -10.0, 10.0);
+    //glOrtho(-10.0, 10.0, -10.0, 10.0, -100.0, 100.0);
+    gluPerspective(70.0F, (float)wx / wy, 1.0, 400.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -164,7 +196,17 @@ static void reshape(int wx, int wy) {
 /* n'est en file d'attente                      */
 
 static void idle(void) {
-    angle += 0.1f;
+    //angle += 0.1;
+    if (posAnneauZ > 6)
+    {
+        posAnneauZ = -10.0;
+        //srand((unsigned int)time(NULL));
+        posAnneauX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
+        printf("PosX = %f", posAnneauX);
+    }
+    else {
+        posAnneauZ += speedAnneauZ;
+    }
     glutPostRedisplay();
 }
 
@@ -194,6 +236,22 @@ static void keyboard(unsigned char key, int x, int y) {
     }
 }
 
+static void deplacement() {
+    if (touches[0]) {
+        v.setPosX(v.getPosX() - 0.2f);
+    }
+    if (touches[1]) {
+        v.setPosX(v.getPosX() + 0.2f);
+    }
+    if (touches[2]) {
+        v.setPosY(v.getPosY() + 0.2f);
+    }
+    if (touches[3]) {
+        v.setPosY(v.getPosY() - 0.2f);
+    }
+    glutPostRedisplay();
+}
+
 /* Fonction executee lors de l'appui            */
 /* d'une touche speciale du clavier :           */
 /*   - touches de curseur                       */
@@ -203,20 +261,20 @@ static void special(int specialKey, int x, int y) {
     printf("S  %4d %4d %4d\n", specialKey, x, y);
     switch (specialKey) {
     case GLUT_KEY_LEFT:
-        v.setPosX(v.getPosX() - 0.5f);
-        glutPostRedisplay();
+        touches[0] = true;
+        deplacement();
         break;
     case GLUT_KEY_RIGHT:
-        v.setPosX(v.getPosX() + 0.5f);
-        glutPostRedisplay();
+        touches[1] = true;
+        deplacement();
         break;
     case GLUT_KEY_UP:
-        v.setPosY(v.getPosY() + 0.5f);
-        glutPostRedisplay();
+        touches[2] = true;
+        deplacement();
         break;
     case GLUT_KEY_DOWN:
-        v.setPosY(v.getPosY() - 0.5f);
-        glutPostRedisplay();
+        touches[3] = true;
+        deplacement();
         break;
     case GLUT_KEY_F1:
         firstPerson = !firstPerson;
@@ -225,6 +283,27 @@ static void special(int specialKey, int x, int y) {
     case GLUT_KEY_F2:
         texture = !texture;
         glutPostRedisplay();
+        break;
+    case GLUT_KEY_F3:
+        lumiere = !lumiere;
+        glutPostRedisplay();
+        break;
+    }
+}
+
+static void specialUp(int specialKey, int x, int y) {
+    switch (specialKey) {
+    case GLUT_KEY_LEFT:
+        touches[0] = false;
+        break;
+    case GLUT_KEY_RIGHT:
+        touches[1] = false;
+        break;
+    case GLUT_KEY_UP:
+        touches[2] = false;
+        break;
+    case GLUT_KEY_DOWN:
+        touches[3] = false;
         break;
     }
 }
@@ -256,12 +335,10 @@ static void passiveMouseMotion(int x, int y) {
     printf("PM %4d %4d\n", x, y);
 }
 
-/* Fonction exécutée automatiquement            */
-/* lors de l'exécution de la fonction exit()    */
+/* Fonction exï¿½cutï¿½e automatiquement            */
+/* lors de l'exï¿½cution de la fonction exit()    */
 
 static void clean(void) {
-    if (v.textureID != 0)
-        glDeleteTextures(1, &v.textureID);
     printf("Bye\n");
 }
 
@@ -275,10 +352,11 @@ int main(int argc, char** argv) {
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowSize(wTx, wTy);
     glutInitWindowPosition(wPx, wPy);
-    glutCreateWindow("Gestion événementielle de GLUt");
+    glutCreateWindow("Gestion ï¿½vï¿½nementielle de GLUt");
     init();
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(special);
+    glutSpecialUpFunc(specialUp);
     glutMouseFunc(mouse);
     glutMotionFunc(mouseMotion);
     //glutPassiveMotionFunc(passiveMouseMotion);

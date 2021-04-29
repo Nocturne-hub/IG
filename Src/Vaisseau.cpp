@@ -31,6 +31,7 @@ bool Vaisseau::enCollision(Patatoide p) {
 
 void Vaisseau::mySolidVaisseau(float c) {
     float m = c / 2;
+        glBindTexture(GL_TEXTURE_2D, texture);
 
     glBegin(GL_TRIANGLES);
 
@@ -46,10 +47,12 @@ void Vaisseau::mySolidVaisseau(float c) {
 
     Dir3D dNorm1 = d14 ^ d13;
     glNormal3f(dNorm1.x, dNorm1.y, dNorm1.z);
+    glTexCoord2f(0, 1);
     glVertex3f(p1.x, p1.y, p1.z);    //1
+    glTexCoord2f(1, 0);
     glVertex3f(p4.x, p4.y, p4.z);    //4
+    glTexCoord2f(0, 0);
     glVertex3f(p3.x, p3.y, p3.z);    //3
-    glVertex3f(p4.x, p4.y, p4.z);
 
     // Gauche 1-2-3
 
@@ -89,40 +92,24 @@ void Vaisseau::mySolidVaisseau(float c) {
 
 }
 
-void Vaisseau::initTexture(void) {
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glGenTextures(1, &textureID);
+void Vaisseau::chargementTexture(char* filename, unsigned int textureID) {
     glBindTexture(GL_TEXTURE_2D, textureID);
-    { 
-        char* nomFichier = "textureVaisseau1.png";
-        int rx;
-        int ry;
-        printf("%s\n", nomFichier);
-        unsigned char* img = chargeImagePng(nomFichier, &rx, &ry);
-        if (img) {
-            printf("Resolution en x : %8d\n", rx);
-            printf("Resolution en y : %8d\n", ry);
-            printf("Adresse         : %p, %d octets\n", img, 3 * rx * ry);
-        }
-        else {
-            printf("Adresse         : %p\n", img);
-        }
-        printf("\n");
-
-        if (img) {
-            glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
-            free(img);
-            printf("Texture chargee %d\n", textureID);
-        }
-        else {
-            glDeleteTextures(1, &textureID);
-            textureID = 0;
-            printf("Texture non chargee\n");
-        } }
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    { int rx;
+    int ry;
+    unsigned char* img = chargeImagePng(filename, &rx, &ry);
+    if (img) {
+        glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
+        free(img);
+        printf("Texture chargée %d : %s\n", textureID, filename);
+    }
+    else {
+        printf("Texture non chargée\n");
+    } }
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
 void Vaisseau::Quadrilatere(double c) {
@@ -250,20 +237,23 @@ void Vaisseau::mySolidSphere(GLdouble height, GLint slices, GLint stacks) {
 }
 
 void Vaisseau::mySolidSpaceShipBody(GLdouble base, GLdouble height, GLint slices, GLint stacks) {
-    mySolidSphere(base, 50, 50);
     glPushMatrix();
+    mySolidSphere(base, 50, 50);
     mySolidCylindre(base, height, 500, 50);
-    glPopMatrix();
     glTranslatef(0.0f, 0.0f, height);
     mySolidSphere(base, 50, 50);
+    glPopMatrix();
 }
 
 void Vaisseau::mySolidSpaceShip(double c) {
-    glPushMatrix();
-    glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
-    mySolidSpaceShipBody(c, c*3, 50, 50);     //Main du vaisseau
+    glBindTexture(GL_TEXTURE_2D, texture);
 
     glPushMatrix();
+    glTranslatef(0.0f, 0.0f, c * 3);
+    glPushMatrix();
+    glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+    mySolidSpaceShipBody(c, c*3, 50, 50);     //Main du vaisseau
+    glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
     glTranslatef(0.0f, -c*1.25f, -0.05f);
     mySolidVaisseau(c*1.5f);                //Aileron du vaisseau
     glPopMatrix();

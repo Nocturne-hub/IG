@@ -18,7 +18,7 @@ class Vaisseau {
 		float posZ = 0.0f;
 
 	public:
-		unsigned int textureID;
+		unsigned int texture;
 		void mySolidVaisseau(float c);
 		float getPosX();
 		float getPosY();
@@ -26,7 +26,7 @@ class Vaisseau {
 		void setPosX(float x);
 		void setPosY(float y);
 		void setPosZ(float z);
-		void initTexture();
+		void chargementTexture(char* filename, unsigned int textureID);
 		void mySolidSpaceShip(double c);
 		void mySolidShipWing(double c, bool rigth);
 		void mySolidSpaceShipBody(GLdouble base, GLdouble height, GLint slices, GLint stacks);
