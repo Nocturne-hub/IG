@@ -7,7 +7,21 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 class Patatoide {
-	public:
-		void myPatatoide(double c);
-};
+private:
+	float posX = 0.0f;
+	float posY = 0.0f;
+	float posZ = 0.0f;
+public:
 
+	Patatoide(float x, float y, float z);
+	
+	void myPatatoide(double c);
+	float getPosX();
+	float getPosY();
+	float getPosZ();
+
+	void setPosX(float x);
+	void setPosY(float y);
+	void setPosZ(float z);
+
+};
