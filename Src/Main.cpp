@@ -50,7 +50,6 @@ Anneau anneaux[NBANNEAU];
 /* OpenGL ne changeant pas au cours de la vie   */
 /* du programme                                 */
 static void initAnneaux() {
-    srand((unsigned int)time(0));
     float posAnneauZ = -15.0f;
     for (int i = 0; i < NBANNEAU; i++) {
         float nPosAnneauX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
@@ -63,7 +62,6 @@ static void initAnneaux() {
 }
 
 static void initPatatoides() {
-    srand((unsigned int)time(0));
     for (int i = 0; i < NBPATATOIDE; i++) {
         float nPosAnneauX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
         float nPosAnneauY = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
@@ -93,6 +91,7 @@ static void init(void) {
     glGenTextures(2, textureID);
     v.chargementTexture("textureVaisseau.png", textureID[0]);
     v.texture = textureID[0];
+    srand((unsigned int)time(0));
     initAnneaux();
     initPatatoides();
     //sb.chargementTexture("Emoji3.png", textureID[2]);
@@ -225,7 +224,7 @@ static void idle(void) {
         if (anneaux[i].getPosZ() > 6.0f)
         {
             anneaux[i].setPosZ(-(NBANNEAU * 30.0));
-            srand((unsigned int)time(0));
+            //srand((unsigned int)time(0));
 
             float nPosAnneauX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
             float nPosAnneauY = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
@@ -245,7 +244,7 @@ static void idle(void) {
         if (patatoides[i].getPosZ() > 6.0f)
         {
             patatoides[i].setPosZ(-(NBANNEAU*30));
-            srand((unsigned int)time(0));
+            //srand((unsigned int)time(0));
 
             float nPosPatatoideX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
             float nPosPatatoideY = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
