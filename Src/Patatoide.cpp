@@ -1,5 +1,29 @@
 #include "Patatoide.h"
 
+float Patatoide::getPosX() {
+    return posPatatoideX;
+}
+
+float Patatoide::getPosY() {
+    return posPatatoideY;
+}
+
+float Patatoide::getPosZ() {
+    return posPatatoideZ;
+}
+
+void Patatoide::setPosX(float x) {
+    posPatatoideX = x;
+}
+
+void Patatoide::setPosY(float y) {
+    posPatatoideY = y;
+}
+
+void Patatoide::setPosZ(float z) {
+    posPatatoideZ = z;
+
+}
 void Patatoide::myPatatoide(double c) {
     double m = c / 2;
     glBindTexture(GL_TEXTURE_2D, texture);

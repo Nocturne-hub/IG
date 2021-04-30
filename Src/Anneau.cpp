@@ -1,5 +1,29 @@
 #include "Anneau.h"
 
+float Anneau::getPosX() {
+    return posAnneauX;
+}
+
+float Anneau::getPosY() {
+    return posAnneauY;
+}
+
+float Anneau::getPosZ() {
+    return posAnneauZ;
+}
+
+void Anneau::setPosX(float x) {
+    posAnneauX = x;
+}
+
+void Anneau::setPosY(float y) {
+    posAnneauY = y;
+}
+
+void Anneau::setPosZ(float z) {
+    posAnneauZ = z;
+}
+
 void Anneau::myPrecious(double rayonTube, double rayonTore, double angleI, double angleF, int nbTube, int nbTore) {
     for (int i = 0; i < nbTore; i++) {
         float da = angleF - angleI;
