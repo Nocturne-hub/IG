@@ -77,9 +77,9 @@ static void initPatatoides() {
 static void init(void) {
     const GLfloat shininess[] = { 50.0 };
     glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
-    //glLightfv(GL_LIGHT0, GL_DIFFUSE, rouge);
-    //glLightfv(GL_LIGHT1, GL_DIFFUSE, jaune);
-    //glLightfv(GL_LIGHT2, GL_DIFFUSE, bleu);
+    /*glLightfv(GL_LIGHT0, GL_DIFFUSE, rouge);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, jaune);
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, bleu);*/
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
@@ -117,7 +117,7 @@ static void scene(void) {
         for (int i = 0; i < NBANNEAU; i++) {
             glPushMatrix();
             glTranslatef(anneaux[i].getPosX(), anneaux[i].getPosY(), anneaux[i].getPosZ());
-            // glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
+            //glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
             anneaux[i].myPrecious(0.1, 3.0, 18, 72);
             glPopMatrix();
         }
