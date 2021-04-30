@@ -1,6 +1,6 @@
 #include "Skybox.h"
 
-void drawSkyBox(float x, float y, unsigned int textureId) {
+void Skybox::drawSkyBox(float x, float y, unsigned int textureId) {
     // Taille du cube
     float t = 1.0f;
 

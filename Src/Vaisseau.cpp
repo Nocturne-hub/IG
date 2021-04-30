@@ -1,6 +1,22 @@
 #include "Vaisseau.h"
 #include "Dir3D.h"
 
+Vaisseau::Vaisseau() {
+    tailleX = taille * 2.5f;
+    tailleY = taille * 1.5f;
+    tailleZ = taille * 3.5f;
+}
+
+
+Vaisseau::Vaisseau(float t) {
+    taille = t;
+
+    tailleX = t * 2.5f;
+    tailleY = t * 1.5f;
+    tailleZ = t * 3.5f;
+
+}
+
 float Vaisseau::getPosX() {
     return posX;
 }
@@ -26,12 +42,46 @@ void Vaisseau::setPosZ(float z) {
 }
 
 bool Vaisseau::enCollision(Patatoide p) {
-    return true;
+    if (p.isBoomed()) {
+        return false;
+    }
+
+    float absX = abs(p.getPosX() - posX);
+    float absY = abs(p.getPosY() - posY);
+    float absZ = abs(p.getPosZ() - posZ);
+
+    if (absX <= tailleX && absY <= tailleY && absZ <= tailleZ) {
+        printf("boom\n");
+        vie--;
+        return true;
+    }
+
+    return false;
 }
+
+bool Vaisseau::miamAnneau(Anneau a) {
+    if (a.isMiamed()) {
+        return false;
+    }
+
+    float absX = abs(a.getPosX() - posX);
+    float absY = abs(a.getPosY() - posY);
+    float absZ = abs(a.getPosZ() - posZ);
+
+    if (absX <= tailleX && absY <= tailleY && absZ <= tailleZ) {
+        printf("actually miaming\n");
+        score++;
+
+        return true;
+    }
+
+    return false;
+}
+
 
 void Vaisseau::mySolidVaisseau(float c) {
     float m = c / 2;
-        glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
 
     glBegin(GL_TRIANGLES);
 
@@ -245,22 +295,22 @@ void Vaisseau::mySolidSpaceShipBody(GLdouble base, GLdouble height, GLint slices
     glPopMatrix();
 }
 
-void Vaisseau::mySolidSpaceShip(double c) {
+void Vaisseau::mySolidSpaceShip() {
     glBindTexture(GL_TEXTURE_2D, texture);
 
     glPushMatrix();
-    glTranslatef(0.0f, 0.0f, c * 3);
+    glTranslatef(0.0f, 0.0f, taille * 3);
     glPushMatrix();
     glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
-    mySolidSpaceShipBody(c, c*3, 50, 50);     //Main du vaisseau
+    mySolidSpaceShipBody(taille, taille *3, 50, 50);     //Main du vaisseau
     glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
-    glTranslatef(0.0f, -c*1.25f, -0.05f);
-    mySolidVaisseau(c*1.5f);                //Aileron du vaisseau
+    glTranslatef(0.0f, -taille *1.25f, -0.05f);
+    mySolidVaisseau(taille *1.5f);                //Aileron du vaisseau
     glPopMatrix();
     glPushMatrix();
-    glTranslatef(c*1.25f, 0.0f, -c);
-    mySolidShipWing(c*1.25f, true);                   //Aile droite
-    mySolidShipWing(c*1.25f, false);                   //Aille gauche
+    glTranslatef(taille *1.25f, 0.0f, -taille);
+    mySolidShipWing(taille *1.25f, true);                   //Aile droite
+    mySolidShipWing(taille *1.25f, false);                   //Aille gauche
     glPopMatrix();
     glPopMatrix();
 }

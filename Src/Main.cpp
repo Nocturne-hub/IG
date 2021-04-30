@@ -32,8 +32,6 @@ static int rz = 0;
 static int mouseX = 0;
 static bool touches[] = { false, false, false, false };
 
-static float posAnneauX = 0.0;
-static float posAnneauZ = -5.0;
 static float speedAnneauZ = 0.1;
 
 static bool texture = true;
@@ -68,10 +66,17 @@ static void init(void) {
     glEnable(GL_NORMALIZE);
     glEnable(GL_AUTO_NORMAL);
     glGenTextures(2, textureID);
+
+    a = Anneau(0.0, 0.0, -5.0);
+
+    printf("init : %d \n", a.isMiamed());
+
+    v = Vaisseau(1.0f);
     v.chargementTexture("textureVaisseau.png", textureID[0]);
     v.texture = textureID[0];
+    p = Patatoide(0.0f, 0.0f, -5.0f, textureID[1]);
     p.chargementTexture("CAILLOU2.png", textureID[1]);
-    p.texture = textureID[1];
+
 
     //sb.chargementTexture("Emoji3.png", textureID[2]);
     //sb.texture = textureID[2];
@@ -88,13 +93,13 @@ static void initSkybox() {
 static void scene(void) {
     glPushMatrix();
         glPushMatrix();
-            glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ()-5.0);
+            glTranslatef(p.getPosX(), p.getPosY(),p.getPosZ());
             //glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
             p.myPatatoide(1.5f);
         glPopMatrix();
 
         glPushMatrix();
-            glTranslatef(posAnneauX, 0.0f, posAnneauZ);
+        glTranslatef(a.getPosX(), a.getPosY() , a.getPosZ());
            // glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
             a.myPrecious(0.1, 3.0, 18, 72);
         glPopMatrix();
@@ -102,7 +107,7 @@ static void scene(void) {
         glPushMatrix();
             glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ());
             //glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
-            v.mySolidSpaceShip(1.0f);
+            v.mySolidSpaceShip();
         glPopMatrix();
         
         
@@ -127,13 +132,13 @@ static void display(void) {
     }
     int rotate = gauche ? -1.0 : 1.0;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLoadIdentity();
+    /*glLoadIdentity();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_CUBE_MAP_ARB);
     glDisable(GL_LIGHTING);
     glDepthMask(GL_FALSE);
-    skybox.drawSkyBox(v.getPosX(), v.getPosX(),1);
+    skybox.drawSkyBox(v.getPosX(), v.getPosX(),1);*/
     
 
     /*const GLfloat light0_position[] = { 0.0,0.0,0.0,1.0 };
@@ -151,9 +156,10 @@ static void display(void) {
     float cameraLookX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraLookY = firstPerson ? v.getPosY() : v.getPosY();
     float cameraLookZ = firstPerson ? v.getPosZ() - 3.0 : -(v.getPosZ() + 0.5);
-    printf("Vaisseau x,y,z : %f %f %f\n", v.getPosX(), v.getPosY(), v.getPosZ());
+   
+    /*printf("Vaisseau x,y,z : %f %f %f\n", v.getPosX(), v.getPosY(), v.getPosZ());
     printf("Camera x,y,z : %f %f %f\n", cameraPosX, cameraPosY, cameraPosZ);
-    printf("Camera look x,y,z : %f %f %f\n", cameraLookX, cameraLookY, cameraLookZ);
+    printf("Camera look x,y,z : %f %f %f\n", cameraLookX, cameraLookY, cameraLookZ);*/
 
     gluLookAt(cameraPosX, cameraPosY, cameraPosZ, cameraLookX, cameraLookY, cameraLookZ, 0.0, 1.0, 1.0);
     
@@ -197,16 +203,24 @@ static void reshape(int wx, int wy) {
 
 static void idle(void) {
     //angle += 0.1;
-    if (posAnneauZ > 6)
+    if (a.getPosZ() > 6)
     {
-        posAnneauZ = -10.0;
+        a.setPosZ(-10.0);
         //srand((unsigned int)time(NULL));
-        posAnneauX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
-        printf("PosX = %f", posAnneauX);
+        a.setPosX(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0);
+
+        p.setPosZ(-10.0);
+        p.setPosX(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0);
+
     }
     else {
-        posAnneauZ += speedAnneauZ;
+        a.setPosZ(a.getPosZ() + speedAnneauZ);
+        p.setPosZ(p.getPosZ() + speedAnneauZ);
     }
+
+    if(v.enCollision(p)) p.boom();
+    if(v.miamAnneau(a)) a.miam();
+
     glutPostRedisplay();
 }
 

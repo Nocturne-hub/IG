@@ -13,10 +13,15 @@ private:
 	float posX = 0.0f;
 	float posY = 0.0f;
 	float posZ = 0.0f;
+
+	bool alreadyBoomed = false;
+
 public:
 
-	Patatoide(float x, float y, float z);
+	Patatoide(float x, float y, float z, unsigned int textureId);
+	Patatoide();
 	
+	unsigned int texture;
 	void myPatatoide(double c);
 	float getPosX();
 	float getPosY();
@@ -26,8 +31,9 @@ public:
 	void setPosY(float y);
 	void setPosZ(float z);
 
-	public:
-		unsigned int texture;
-		void myPatatoide(double c);
-		void chargementTexture(char* filename, unsigned int textureID);
+	void boom();
+	bool isBoomed();
+	void deBoom();
+
+	void chargementTexture(char* filename, unsigned int textureID);
 };

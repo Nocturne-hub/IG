@@ -24,12 +24,28 @@ float Patatoide::getPosZ() {
     return posZ;
 }
 
-Patatoide::Patatoide(float x, float y, float z ) {
+Patatoide::Patatoide(float x, float y, float z, unsigned int textureId ) {
     posX = x;
     posY = y;
     posZ = z;
+    texture = textureId;
 }
 
+Patatoide::Patatoide() {
+
+}
+
+void Patatoide::boom() {
+    alreadyBoomed = true;
+}
+
+void Patatoide::deBoom() {
+    alreadyBoomed = false;
+}
+
+bool Patatoide::isBoomed() {
+    return alreadyBoomed;
+}
 
 void Patatoide::myPatatoide(double c) {
     double m = c / 2;
