@@ -6,7 +6,8 @@
 #include <iostream>
 
 #define PI 3.1415926535898
-
+#define NBANNEAU 5
+#define NBPATATOIDE 10
 
 /* Variables globales                           */
 
@@ -32,24 +33,46 @@ static int rz = 0;
 static int mouseX = 0;
 static bool touches[] = { false, false, false, false };
 
-static float speedAnneauZ = 0.1;
+static float speedAnneauZ = 0.3f;
+static float speedPatatoideZ = 0.5f;
+static float speedDeplacement = 0.9f;
 
 static bool texture = true;
-
-
 static unsigned int texturesSkyBox[6];
-
 static unsigned int textureID[3] = { 0,0,0 };
 
-Anneau a;
-Patatoide p;
 Vaisseau v;
 Skybox skybox;
-
+Patatoide patatoides[NBPATATOIDE];
+Anneau anneaux[NBANNEAU];
 
 /* Fonction d'initialisation des parametres     */
 /* OpenGL ne changeant pas au cours de la vie   */
 /* du programme                                 */
+static void initAnneaux() {
+    float posAnneauZ = -15.0f;
+    for (int i = 0; i < NBANNEAU; i++) {
+        float nPosAnneauX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
+        float nPosAnneauY = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
+        anneaux[i].setPosX(nPosAnneauX);
+        anneaux[i].setPosY(nPosAnneauY);
+        anneaux[i].setPosZ(posAnneauZ);
+        posAnneauZ -= 30.0f;
+    }
+}
+
+static void initPatatoides() {
+    for (int i = 0; i < NBPATATOIDE; i++) {
+        float nPosAnneauX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
+        float nPosAnneauY = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
+        float nPosAnneauZ = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / -90.0)) - 15.0;
+        patatoides[i].setPosX(nPosAnneauX);
+        patatoides[i].setPosY(nPosAnneauY);
+        patatoides[i].setPosZ(nPosAnneauZ);
+        patatoides[i].chargementTexture("textureAsteroide.png", textureID[1]);
+        patatoides[i].texture = textureID[1];
+    }
+}
 
 static void init(void) {
     const GLfloat shininess[] = { 50.0 };
@@ -74,10 +97,9 @@ static void init(void) {
     v = Vaisseau(1.0f);
     v.chargementTexture("textureVaisseau.png", textureID[0]);
     v.texture = textureID[0];
-    p = Patatoide(0.0f, 0.0f, -5.0f, textureID[1]);
-    p.chargementTexture("CAILLOU2.png", textureID[1]);
-
-
+    srand((unsigned int)time(0));
+    initAnneaux();
+    initPatatoides();
     //sb.chargementTexture("Emoji3.png", textureID[2]);
     //sb.texture = textureID[2];
 }
@@ -86,23 +108,25 @@ static void initSkybox() {
     int rx, ry;
 }
 
-
-
 /* Scene dessinee                               */
 
 static void scene(void) {
     glPushMatrix();
-        glPushMatrix();
-            glTranslatef(p.getPosX(), p.getPosY(),p.getPosZ());
+        for (int i = 0; i < NBPATATOIDE; i++) {
+            glPushMatrix();
+            glTranslatef(patatoides[i].getPosX(), patatoides[i].getPosY(), patatoides[i].getPosZ());
             //glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
-            p.myPatatoide(1.5f);
-        glPopMatrix();
+            patatoides[i].myPatatoide(1.5f);
+            glPopMatrix();
+        }
 
-        glPushMatrix();
-        glTranslatef(a.getPosX(), a.getPosY() , a.getPosZ());
-           // glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
-            a.myPrecious(0.1, 3.0, 18, 72);
-        glPopMatrix();
+        for (int i = 0; i < NBANNEAU; i++) {
+            glPushMatrix();
+            glTranslatef(anneaux[i].getPosX(), anneaux[i].getPosY(), anneaux[i].getPosZ());
+            // glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
+            anneaux[i].myPrecious(0.1, 3.0, 18, 72);
+            glPopMatrix();
+        }
 
         glPushMatrix();
             glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ());
@@ -138,7 +162,7 @@ static void display(void) {
     glEnable(GL_TEXTURE_CUBE_MAP_ARB);
     glDisable(GL_LIGHTING);
     glDepthMask(GL_FALSE);
-    skybox.drawSkyBox(v.getPosX(), v.getPosX(),1);*/
+    skybox.drawSkyBox(v.getPosX(), v.getPosX(),1);
     
 
     /*const GLfloat light0_position[] = { 0.0,0.0,0.0,1.0 };
@@ -203,19 +227,44 @@ static void reshape(int wx, int wy) {
 
 static void idle(void) {
     //angle += 0.1;
-    if (a.getPosZ() > 6)
-    {
-        a.setPosZ(-10.0);
-        //srand((unsigned int)time(NULL));
-        a.setPosX(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0);
+    for (int i = 0; i < NBANNEAU; i++) {
+        if (anneaux[i].getPosZ() > 6.0f)
+        {
+            anneaux[i].setPosZ(-(NBANNEAU * 30.0));
+            //srand((unsigned int)time(0));
 
-        p.setPosZ(-10.0);
-        p.setPosX(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0);
+            float nPosAnneauX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
+            float nPosAnneauY = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
+            anneaux[i].setPosX(nPosAnneauX);
+            anneaux[i].setPosY(nPosAnneauY);
+            printf("PosX for ring %d = %f\n", i, nPosAnneauX);
+            printf("PosY for ring %d = %f\n", i, nPosAnneauY);
+        }
+        else {
 
+            anneaux[i].setPosZ(anneaux[i].getPosZ()+speedAnneauZ);
+            printf("PosZ for ring %d = %f\n", i, anneaux[i].getPosZ() + speedAnneauZ);
+        }
     }
-    else {
-        a.setPosZ(a.getPosZ() + speedAnneauZ);
-        p.setPosZ(p.getPosZ() + speedAnneauZ);
+
+    for (int i = 0; i < NBPATATOIDE; i++) {
+        if (patatoides[i].getPosZ() > 6.0f)
+        {
+            patatoides[i].setPosZ(-(NBANNEAU*30));
+            //srand((unsigned int)time(0));
+
+            float nPosPatatoideX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
+            float nPosPatatoideY = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
+            patatoides[i].setPosX(nPosPatatoideX);
+            patatoides[i].setPosY(nPosPatatoideY);
+            printf("PosX for patatoide %d = %f\n", i, nPosPatatoideX);
+            printf("PosY for patatoide %d = %f\n", i, nPosPatatoideY);
+        }
+        else {
+
+            patatoides[i].setPosZ(patatoides[i].getPosZ() + speedAnneauZ);
+            printf("PosZ for patatoide %d = %f\n", i, patatoides[i].getPosZ() + speedPatatoideZ);
+        }
     }
 
     if(v.enCollision(p)) p.boom();
@@ -252,16 +301,16 @@ static void keyboard(unsigned char key, int x, int y) {
 
 static void deplacement() {
     if (touches[0]) {
-        v.setPosX(v.getPosX() - 0.2f);
+        v.setPosX(v.getPosX() - speedDeplacement);
     }
     if (touches[1]) {
-        v.setPosX(v.getPosX() + 0.2f);
+        v.setPosX(v.getPosX() + speedDeplacement);
     }
     if (touches[2]) {
-        v.setPosY(v.getPosY() + 0.2f);
+        v.setPosY(v.getPosY() + speedDeplacement);
     }
     if (touches[3]) {
-        v.setPosY(v.getPosY() - 0.2f);
+        v.setPosY(v.getPosY() - speedDeplacement);
     }
     glutPostRedisplay();
 }
@@ -366,7 +415,7 @@ int main(int argc, char** argv) {
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowSize(wTx, wTy);
     glutInitWindowPosition(wPx, wPy);
-    glutCreateWindow("Gestion �v�nementielle de GLUt");
+    glutCreateWindow("Gestion événementielle de GLUt");
     init();
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(special);

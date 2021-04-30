@@ -1,4 +1,4 @@
-#include "Patatoide.h"
+ï»¿#include "Patatoide.h"
 
 void Patatoide::setPosX(float x) {
     posX = x;
@@ -131,10 +131,10 @@ void Patatoide::chargementTexture(char* filename, unsigned int textureID) {
     if (img) {
         glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
         free(img);
-        printf("Texture chargée %d : %s\n", textureID, filename);
+        printf("Texture chargï¿½e %d : %s\n", textureID, filename);
     }
     else {
-        printf("Texture non chargée\n");
+        printf("Texture non chargï¿½e\n");
     } }
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
