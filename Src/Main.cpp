@@ -90,10 +90,6 @@ static void init(void) {
     glEnable(GL_AUTO_NORMAL);
     glGenTextures(2, textureID);
 
-    a = Anneau(0.0, 0.0, -5.0);
-
-    printf("init : %d \n", a.isMiamed());
-
     v = Vaisseau(1.0f);
     v.chargementTexture("textureVaisseau.png", textureID[0]);
     v.texture = textureID[0];
@@ -266,9 +262,6 @@ static void idle(void) {
             printf("PosZ for patatoide %d = %f\n", i, patatoides[i].getPosZ() + speedPatatoideZ);
         }
     }
-
-    if(v.enCollision(p)) p.boom();
-    if(v.miamAnneau(a)) a.miam();
 
     glutPostRedisplay();
 }
