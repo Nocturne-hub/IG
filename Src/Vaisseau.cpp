@@ -50,9 +50,10 @@ bool Vaisseau::enCollision(Patatoide p) {
     float absY = abs(p.getPosY() - posY);
     float absZ = abs(p.getPosZ() - posZ);
 
-    if (absX <= tailleX && absY <= tailleY && absZ <= tailleZ) {
+    if (absX <= tailleX && absY <= (tailleY +4.0) && absZ <= tailleZ) {
         printf("boom\n");
         vie--;
+        printf("vie %d\n", vie);
         return true;
     }
 
@@ -71,7 +72,7 @@ bool Vaisseau::miamAnneau(Anneau a) {
     if (absX <= tailleX && absY <= tailleY && absZ <= tailleZ) {
         printf("actually miaming\n");
         score++;
-
+        printf("score %d\n", score);
         return true;
     }
 

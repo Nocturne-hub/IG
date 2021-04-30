@@ -233,14 +233,21 @@ static void idle(void) {
             float nPosAnneauY = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
             anneaux[i].setPosX(nPosAnneauX);
             anneaux[i].setPosY(nPosAnneauY);
-            printf("PosX for ring %d = %f\n", i, nPosAnneauX);
-            printf("PosY for ring %d = %f\n", i, nPosAnneauY);
+
+            anneaux[i].unMiam();
+            /*printf("PosX for ring %d = %f\n", i, nPosAnneauX);
+            printf("PosY for ring %d = %f\n", i, nPosAnneauY);*/
         }
         else {
 
             anneaux[i].setPosZ(anneaux[i].getPosZ()+speedAnneauZ);
-            printf("PosZ for ring %d = %f\n", i, anneaux[i].getPosZ() + speedAnneauZ);
+            //printf("PosZ for ring %d = %f\n", i, anneaux[i].getPosZ() + speedAnneauZ);
         }
+
+        if (v.miamAnneau(anneaux[i])) {
+            anneaux[i].miam();
+        }
+
     }
 
     for (int i = 0; i < NBPATATOIDE; i++) {
@@ -253,13 +260,19 @@ static void idle(void) {
             float nPosPatatoideY = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
             patatoides[i].setPosX(nPosPatatoideX);
             patatoides[i].setPosY(nPosPatatoideY);
-            printf("PosX for patatoide %d = %f\n", i, nPosPatatoideX);
-            printf("PosY for patatoide %d = %f\n", i, nPosPatatoideY);
+
+            patatoides[i].deBoom();
+            /*printf("PosX for patatoide %d = %f\n", i, nPosPatatoideX);
+            printf("PosY for patatoide %d = %f\n", i, nPosPatatoideY);*/
         }
         else {
 
             patatoides[i].setPosZ(patatoides[i].getPosZ() + speedAnneauZ);
-            printf("PosZ for patatoide %d = %f\n", i, patatoides[i].getPosZ() + speedPatatoideZ);
+            //printf("PosZ for patatoide %d = %f\n", i, patatoides[i].getPosZ() + speedPatatoideZ);
+        }
+
+        if (v.enCollision(patatoides[i])) {
+            patatoides[i].boom();
         }
     }
 
