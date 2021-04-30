@@ -1,28 +1,54 @@
 #include "Anneau.h"
 
+Anneau::Anneau(float x, float y, float z) {
+    posX = x;
+    posY = y;
+    posZ = z;
+
+    alreadyMiamed = false;
+}
+
+
+Anneau::Anneau() {
+    alreadyMiamed = false;
+}
+
+
 float Anneau::getPosX() {
-    return posAnneauX;
+    return posX;
 }
-
 float Anneau::getPosY() {
-    return posAnneauY;
+    return posY;
 }
-
 float Anneau::getPosZ() {
-    return posAnneauZ;
+    return posZ;
 }
 
 void Anneau::setPosX(float x) {
-    posAnneauX = x;
+    posX = x;
 }
 
 void Anneau::setPosY(float y) {
-    posAnneauY = y;
+    posY = y;
 }
 
 void Anneau::setPosZ(float z) {
-    posAnneauZ = z;
+    posZ = z;
 }
+
+bool Anneau::isMiamed() {
+    return alreadyMiamed;
+}
+
+void Anneau::miam() {
+    alreadyMiamed = true;
+}
+
+void Anneau::unMiam() {
+    alreadyMiamed = false;
+}
+
+
 
 void Anneau::myPrecious(double rayonTube, double rayonTore, double angleI, double angleF, int nbTube, int nbTore) {
     for (int i = 0; i < nbTore; i++) {

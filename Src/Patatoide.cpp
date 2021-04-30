@@ -1,29 +1,52 @@
-#include "Patatoide.h"
-
-float Patatoide::getPosX() {
-    return posPatatoideX;
-}
-
-float Patatoide::getPosY() {
-    return posPatatoideY;
-}
-
-float Patatoide::getPosZ() {
-    return posPatatoideZ;
-}
+ï»¿#include "Patatoide.h"
 
 void Patatoide::setPosX(float x) {
-    posPatatoideX = x;
+    posX = x;
 }
 
 void Patatoide::setPosY(float y) {
-    posPatatoideY = y;
+    posY = y;
 }
 
 void Patatoide::setPosZ(float z) {
-    posPatatoideZ = z;
+    posZ = z;
+}
+
+float Patatoide::getPosX() {
+    return posX;
+}
+
+float Patatoide::getPosY() {
+    return posY;
+}
+
+float Patatoide::getPosZ() {
+    return posZ;
+}
+
+Patatoide::Patatoide(float x, float y, float z, unsigned int textureId ) {
+    posX = x;
+    posY = y;
+    posZ = z;
+    texture = textureId;
+}
+
+Patatoide::Patatoide() {
 
 }
+
+void Patatoide::boom() {
+    alreadyBoomed = true;
+}
+
+void Patatoide::deBoom() {
+    alreadyBoomed = false;
+}
+
+bool Patatoide::isBoomed() {
+    return alreadyBoomed;
+}
+
 void Patatoide::myPatatoide(double c) {
     double m = c / 2;
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -108,10 +131,10 @@ void Patatoide::chargementTexture(char* filename, unsigned int textureID) {
     if (img) {
         glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
         free(img);
-        printf("Texture chargée %d : %s\n", textureID, filename);
+        printf("Texture chargï¿½e %d : %s\n", textureID, filename);
     }
     else {
-        printf("Texture non chargée\n");
+        printf("Texture non chargï¿½e\n");
     } }
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
