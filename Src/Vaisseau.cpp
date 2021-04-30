@@ -46,12 +46,14 @@ bool Vaisseau::enCollision(Patatoide p) {
         return false;
     }
 
+
+
     float absX = abs(p.getPosX() - posX);
     float absY = abs(p.getPosY() - posY);
     float absZ = abs(p.getPosZ() - posZ);
 
-    if (absX <= tailleX && absY <= (tailleY +4.0) && absZ <= tailleZ) {
-        printf("boom\n");
+
+    if (absX <= tailleX && absY <= (tailleY) && absZ <= tailleZ) {
         vie--;
         printf("vie %d\n", vie);
         return true;
@@ -69,8 +71,7 @@ bool Vaisseau::miamAnneau(Anneau a) {
     float absY = abs(a.getPosY() - posY);
     float absZ = abs(a.getPosZ() - posZ);
 
-    if (absX <= tailleX && absY <= tailleY && absZ <= tailleZ) {
-        printf("actually miaming\n");
+    if (absX <= tailleX && absY <= (tailleY + 4.0) && absZ <= tailleZ) {
         score++;
         printf("score %d\n", score);
         return true;
@@ -310,8 +311,13 @@ void Vaisseau::mySolidSpaceShip() {
     glPopMatrix();
     glPushMatrix();
     glTranslatef(taille *1.25f, 0.0f, -taille);
-    mySolidShipWing(taille *1.25f, true);                   //Aile droite
-    mySolidShipWing(taille *1.25f, false);                   //Aille gauche
+    if (vie >= 3) {
+        mySolidShipWing(taille * 1.25f, true); //Aile droite
+    }
+    if (vie >= 2) {
+        mySolidShipWing(taille * 1.25f, false);                   //Aille gauche
+    }
+    
     glPopMatrix();
     glPopMatrix();
 }

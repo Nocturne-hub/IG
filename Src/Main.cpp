@@ -4,6 +4,7 @@
 #include "Skybox.h"
 #include <time.h>
 #include <iostream>
+#include <vector>
 
 #define PI 3.1415926535898
 #define NBANNEAU 5
@@ -38,8 +39,8 @@ static float speedPatatoideZ = 0.5f;
 static float speedDeplacement = 0.9f;
 
 static bool texture = true;
-static unsigned int texturesSkyBox[6];
 static unsigned int textureID[3] = { 0,0,0 };
+
 
 Vaisseau v;
 Skybox skybox;
@@ -88,7 +89,7 @@ static void init(void) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
     glEnable(GL_AUTO_NORMAL);
-    glGenTextures(2, textureID);
+    glGenTextures(3, textureID);
 
     v = Vaisseau(1.0f);
     v.chargementTexture("textureVaisseau.png", textureID[0]);
@@ -96,8 +97,8 @@ static void init(void) {
     srand((unsigned int)time(0));
     initAnneaux();
     initPatatoides();
-    //sb.chargementTexture("Emoji3.png", textureID[2]);
-    //sb.texture = textureID[2];
+    skybox.chargementTexture("space.png", textureID[2]);
+    //skybox.texture = textureID[2];
 }
 
 static void initSkybox() {
@@ -152,14 +153,17 @@ static void display(void) {
     }
     int rotate = gauche ? -1.0 : 1.0;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    /*glLoadIdentity();
+    glLoadIdentity();
+    //glColor3f(1.0f, 1.0f, 1.0f);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_CUBE_MAP_ARB);
     glDisable(GL_LIGHTING);
     glDepthMask(GL_FALSE);
-    skybox.drawSkyBox(v.getPosX(), v.getPosX(),1);
-    
+    skybox.drawSkyBox(0.0f, 0.0f);
+    glDepthMask(GL_TRUE);
+    glDisable(GL_TEXTURE_CUBE_MAP_ARB);
+    glEnable(GL_LIGHTING);
 
     /*const GLfloat light0_position[] = { 0.0,0.0,0.0,1.0 };
     const GLfloat light1_position[] = { -1.0,1.0,1.0,0.0 };
@@ -327,7 +331,7 @@ static void deplacement() {
 /*   - touches de fonction                      */
 
 static void special(int specialKey, int x, int y) {
-    printf("S  %4d %4d %4d\n", specialKey, x, y);
+    //printf("S  %4d %4d %4d\n", specialKey, x, y);
     switch (specialKey) {
     case GLUT_KEY_LEFT:
         touches[0] = true;
@@ -362,18 +366,18 @@ static void special(int specialKey, int x, int y) {
 
 static void specialUp(int specialKey, int x, int y) {
     switch (specialKey) {
-    case GLUT_KEY_LEFT:
-        touches[0] = false;
-        break;
-    case GLUT_KEY_RIGHT:
-        touches[1] = false;
-        break;
-    case GLUT_KEY_UP:
-        touches[2] = false;
-        break;
-    case GLUT_KEY_DOWN:
-        touches[3] = false;
-        break;
+        case GLUT_KEY_LEFT:
+            touches[0] = false;
+            break;
+        case GLUT_KEY_RIGHT:
+            touches[1] = false;
+            break;
+        case GLUT_KEY_UP:
+            touches[2] = false;
+            break;
+        case GLUT_KEY_DOWN:
+            touches[3] = false;
+            break;
     }
 }
 
@@ -381,7 +385,7 @@ static void specialUp(int specialKey, int x, int y) {
 /* de la souris sur la fenetre                  */
 
 static void mouse(int button, int state, int x, int y) {
-    printf("M  %4d %4d %4d %4d\n", button, state, x, y);
+    //printf("M  %4d %4d %4d %4d\n", button, state, x, y);
 }
 
 /* Fonction executee lors du passage            */
