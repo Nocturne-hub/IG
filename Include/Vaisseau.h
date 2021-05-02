@@ -27,8 +27,8 @@ class Vaisseau {
 		float tailleY = 0.0f;
 		float tailleZ = 0.0f;
 
-		short vie = 3;
-		long score = 0;
+		int vie = 3;
+		int score = 0;
 
 	public:
 
@@ -43,6 +43,9 @@ class Vaisseau {
 		void setPosX(float x);
 		void setPosY(float y);
 		void setPosZ(float z);
+		int getScore();
+		int getVie();
+
 		void chargementTexture(char* filename, unsigned int textureID);
 		void mySolidSpaceShip();
 		void mySolidShipWing(double c, bool rigth);
