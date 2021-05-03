@@ -113,7 +113,7 @@ static void scene(void) {
             glPushMatrix();
             glTranslatef(patatoides[i].getPosX(), patatoides[i].getPosY(), patatoides[i].getPosZ());
             //glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
-            patatoides[i].myPatatoide(1.5f);
+            patatoides[i].myPatatoide(1.0f);
             glPopMatrix();
         }
 

@@ -22,7 +22,7 @@ public:
 	Patatoide();
 	
 	unsigned int texture;
-	void myPatatoide(double c);
+	void myPatatoide(GLfloat c);
 	float getPosX();
 	float getPosY();
 	float getPosZ();
