@@ -5,6 +5,8 @@ Vaisseau::Vaisseau() {
     tailleX = taille * 2.5f;
     tailleY = taille * 1.5f;
     tailleZ = taille * 3.5f;
+
+    score = 0;
 }
 
 
@@ -15,6 +17,7 @@ Vaisseau::Vaisseau(float t) {
     tailleY = t * 1.5f;
     tailleZ = t * 3.5f;
 
+    score = 0;
 }
 
 float Vaisseau::getPosX() {
@@ -41,17 +44,22 @@ void Vaisseau::setPosZ(float z) {
     posZ = z;
 }
 
+int Vaisseau::getScore() {
+    return score;
+}
+
+int Vaisseau::getVie() {
+    return vie;
+}
+
 bool Vaisseau::enCollision(Patatoide p) {
     if (p.isBoomed()) {
         return false;
     }
 
-
-
     float absX = abs(p.getPosX() - posX);
     float absY = abs(p.getPosY() - posY);
     float absZ = abs(p.getPosZ() - posZ);
-
 
     if (absX <= tailleX && absY <= (tailleY) && absZ <= tailleZ) {
         vie--;

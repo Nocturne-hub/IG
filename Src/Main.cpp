@@ -2,6 +2,7 @@
 #include "Patatoide.h"
 #include "Anneau.h"
 #include "Skybox.h"
+#include "Hud.h"
 #include <time.h>
 #include <iostream>
 #include <vector>
@@ -40,12 +41,13 @@ static float speedDeplacement = 0.9f;
 
 static bool texture = true;
 static unsigned int textureID[3] = { 0,0,0 };
-
+Hud hud;
 
 Vaisseau v;
 Skybox skybox;
 Patatoide patatoides[NBPATATOIDE];
 Anneau anneaux[NBANNEAU];
+
 
 /* Fonction d'initialisation des parametres     */
 /* OpenGL ne changeant pas au cours de la vie   */
@@ -78,13 +80,13 @@ static void initPatatoides() {
 static void init(void) {
     const GLfloat shininess[] = { 50.0 };
     glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
-    //glLightfv(GL_LIGHT0, GL_DIFFUSE, rouge);
-    //glLightfv(GL_LIGHT1, GL_DIFFUSE, jaune);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, blanc);
+    
     //glLightfv(GL_LIGHT2, GL_DIFFUSE, bleu);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHT1);
-    glEnable(GL_LIGHT2);
+    /*glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT2);*/
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
@@ -139,6 +141,7 @@ static void scene(void) {
 /* de la fenetre de dessin                      */
 
 static void display(void) {
+
     if (texture) {
         glEnable(GL_TEXTURE_2D);
     }else {
@@ -151,6 +154,7 @@ static void display(void) {
     else {
         glDisable(GL_LIGHTING);
     }
+
     int rotate = gauche ? -1.0 : 1.0;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -165,12 +169,13 @@ static void display(void) {
     glDisable(GL_TEXTURE_CUBE_MAP_ARB);
     glEnable(GL_LIGHTING);
 
-    /*const GLfloat light0_position[] = { 0.0,0.0,0.0,1.0 };
-    const GLfloat light1_position[] = { -1.0,1.0,1.0,0.0 };
-    const GLfloat light2_position[] = { 1.0,-1.0,1.0,0.0 };
-    glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-    glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-    glLightfv(GL_LIGHT2, GL_POSITION, light2_position);*/
+    /*const GLfloat light0_position[] = { v.getPosX(),v.getPosY(),v.getPosZ(),1.0 };
+    const GLfloat light1_position[] = { 0.0,0.0,0.0,0.0 };
+    const GLfloat light2_position[] = { 1.0,-1.0,1.0,0.0 };*/
+    //glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+    //glLightfv(GL_LIGHT1, GL_AMBIENT, blanc);
+    //glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+    //glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
     glPushMatrix();
 
     float cameraPosX = firstPerson ? v.getPosX() : v.getPosX();
@@ -198,6 +203,14 @@ static void display(void) {
 
 
     scene();
+
+    if (!animation)
+        hud.drawHud("Pour lancer le parcours, appuyer sur [entree] !",NULL,-2.5,8.0);
+
+    hud.drawHud("score", v.getScore(), -8.0, 8.0);
+    hud.drawHud("vie", v.getVie(), 8.0, 8.0);
+
+
     glPopMatrix();
     glFlush();
     glutSwapBuffers();
@@ -217,7 +230,7 @@ static void reshape(int wx, int wy) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     //glOrtho(-10.0, 10.0, -10.0, 10.0, -100.0, 100.0);
-    gluPerspective(70.0F, (float)wx / wy, 1.0, 400.0);
+    gluPerspective(60.0F, (float)wx / wy, 1.0, 400.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -293,12 +306,10 @@ static void keyboard(unsigned char key, int x, int y) {
         exit(0);
         break;
     case 0x20:
-        printf("espace");
         filDeFer = !filDeFer;
         glutPostRedisplay();
         break;
     case 0xd:
-        printf("entree");
         animation = !animation;
         if (animation)
             glutIdleFunc(idle);
@@ -425,7 +436,7 @@ int main(int argc, char** argv) {
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowSize(wTx, wTy);
     glutInitWindowPosition(wPx, wPy);
-    glutCreateWindow("Gestion événementielle de GLUt");
+    glutCreateWindow("La Traversée des Anneaux");
     init();
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(special);
