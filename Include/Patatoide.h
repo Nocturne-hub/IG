@@ -13,6 +13,12 @@ private:
 	float posX = 0.0f;
 	float posY = 0.0f;
 	float posZ = 0.0f;
+	float angleRotation = 0.0f;
+	float axeRotationX = 0.0f;
+	float axeRotationY = 0.0f;
+	float axeRotationZ = 0.0f;
+	int direction = 0.0f;
+	float speed = 0.0f;
 
 	bool alreadyBoomed = false;
 
@@ -22,14 +28,26 @@ public:
 	Patatoide();
 	
 	unsigned int texture;
-	void myPatatoide(double c);
+	void myPatatoide(GLfloat c);
 	float getPosX();
 	float getPosY();
 	float getPosZ();
+	float getAngleRotation();
+	float getAxeRotationX();
+	float getAxeRotationY();
+	float getAxeRotationZ();
+	int getDirection();
+	float getSpeed();
 
 	void setPosX(float x);
 	void setPosY(float y);
 	void setPosZ(float z);
+	void setAngleRotation(float angle);
+	void setAxeRotationX(float axe);
+	void setAxeRotationY(float axe);
+	void setAxeRotationZ(float axe);
+	void setDirection(int dir);
+	void setSpeed(float speed);
 
 	void boom();
 	bool isBoomed();

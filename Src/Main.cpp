@@ -2,13 +2,14 @@
 #include "Patatoide.h"
 #include "Anneau.h"
 #include "Skybox.h"
+#include "Hud.h"
 #include <time.h>
 #include <iostream>
 #include <vector>
 
 #define PI 3.1415926535898
 #define NBANNEAU 5
-#define NBPATATOIDE 10
+#define NBPATATOIDE 30
 
 /* Variables globales                           */
 
@@ -40,12 +41,13 @@ static float speedDeplacement = 0.9f;
 
 static bool texture = true;
 static unsigned int textureID[3] = { 0,0,0 };
-
+Hud hud;
 
 Vaisseau v;
 Skybox skybox;
 Patatoide patatoides[NBPATATOIDE];
 Anneau anneaux[NBANNEAU];
+
 
 /* Fonction d'initialisation des parametres     */
 /* OpenGL ne changeant pas au cours de la vie   */
@@ -64,12 +66,30 @@ static void initAnneaux() {
 
 static void initPatatoides() {
     for (int i = 0; i < NBPATATOIDE; i++) {
-        float nPosAnneauX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
-        float nPosAnneauY = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
-        float nPosAnneauZ = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / -90.0)) - 15.0;
-        patatoides[i].setPosX(nPosAnneauX);
-        patatoides[i].setPosY(nPosAnneauY);
-        patatoides[i].setPosZ(nPosAnneauZ);
+        patatoides[i].setAngleRotation(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 360.0)) - 0.0);
+        patatoides[i].setAxeRotationX(((float)(1 + (rand() % 2))) - 1);
+        patatoides[i].setAxeRotationY(((float)(1 + (rand() % 2))) - 1);
+        patatoides[i].setAxeRotationZ(((float)(1 + (rand() % 2))) - 1);
+        patatoides[i].setDirection((-1 + (rand() % 3)));
+        patatoides[i].setSpeed(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 0.4)) + 0.01);
+        printf("Speed : %f\n", patatoides[i].getSpeed());
+        float nPosPatatoidesX;
+        if (patatoides[i].getDirection() == -1) {
+            nPosPatatoidesX = 35.0f;
+        }
+        else if (patatoides[i].getDirection() == 1) {
+            nPosPatatoidesX = -35.0f;
+        }
+        else {
+            nPosPatatoidesX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
+        }
+         
+        float nPosPatatoidesY = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 30.0)) - 15.0;
+        float nPosPatatoidesZ = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / -90.0)) - 15.0;
+        
+        patatoides[i].setPosX(nPosPatatoidesX);
+        patatoides[i].setPosY(nPosPatatoidesY);
+        patatoides[i].setPosZ(nPosPatatoidesZ);
         patatoides[i].chargementTexture("textureAsteroide.png", textureID[1]);
         patatoides[i].texture = textureID[1];
     }
@@ -78,13 +98,13 @@ static void initPatatoides() {
 static void init(void) {
     const GLfloat shininess[] = { 50.0 };
     glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
-    /*glLightfv(GL_LIGHT0, GL_DIFFUSE, rouge);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, jaune);
-    glLightfv(GL_LIGHT2, GL_DIFFUSE, bleu);*/
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, blanc);
+    
+    //glLightfv(GL_LIGHT2, GL_DIFFUSE, bleu);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHT1);
-    glEnable(GL_LIGHT2);
+    /*glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT2);*/
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
@@ -111,9 +131,12 @@ static void scene(void) {
     glPushMatrix();
         for (int i = 0; i < NBPATATOIDE; i++) {
             glPushMatrix();
+            printf("%f\n", static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 0.4)) - 0.01);
             glTranslatef(patatoides[i].getPosX(), patatoides[i].getPosY(), patatoides[i].getPosZ());
             //glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
-            patatoides[i].myPatatoide(1.5f);
+            glRotatef(patatoides[i].getAngleRotation(), patatoides[i].getAxeRotationX(), patatoides[i].getAxeRotationY(), patatoides[i].getAxeRotationZ());
+            patatoides[i].myPatatoide(1.0f);
+            
             glPopMatrix();
         }
 
@@ -139,6 +162,7 @@ static void scene(void) {
 /* de la fenetre de dessin                      */
 
 static void display(void) {
+
     if (texture) {
         glEnable(GL_TEXTURE_2D);
     }else {
@@ -151,6 +175,7 @@ static void display(void) {
     else {
         glDisable(GL_LIGHTING);
     }
+
     int rotate = gauche ? -1.0 : 1.0;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -165,12 +190,13 @@ static void display(void) {
     glDisable(GL_TEXTURE_CUBE_MAP_ARB);
     glEnable(GL_LIGHTING);
 
-    /*const GLfloat light0_position[] = { 0.0,0.0,0.0,1.0 };
-    const GLfloat light1_position[] = { -1.0,1.0,1.0,0.0 };
-    const GLfloat light2_position[] = { 1.0,-1.0,1.0,0.0 };
-    glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
-    glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-    glLightfv(GL_LIGHT2, GL_POSITION, light2_position);*/
+    /*const GLfloat light0_position[] = { v.getPosX(),v.getPosY(),v.getPosZ(),1.0 };
+    const GLfloat light1_position[] = { 0.0,0.0,0.0,0.0 };
+    const GLfloat light2_position[] = { 1.0,-1.0,1.0,0.0 };*/
+    //glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+    //glLightfv(GL_LIGHT1, GL_AMBIENT, blanc);
+    //glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+    //glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
     glPushMatrix();
 
     float cameraPosX = firstPerson ? v.getPosX() : v.getPosX();
@@ -198,6 +224,14 @@ static void display(void) {
 
 
     scene();
+
+    if (!animation)
+        hud.drawHud("Pour lancer le parcours, appuyer sur [entree] !",NULL,-2.5,8.0);
+
+    hud.drawHud("score", v.getScore(), -8.0, 8.0);
+    hud.drawHud("vie", v.getVie(), 8.0, 8.0);
+
+
     glPopMatrix();
     glFlush();
     glutSwapBuffers();
@@ -217,7 +251,7 @@ static void reshape(int wx, int wy) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     //glOrtho(-10.0, 10.0, -10.0, 10.0, -100.0, 100.0);
-    gluPerspective(70.0F, (float)wx / wy, 1.0, 400.0);
+    gluPerspective(60.0F, (float)wx / wy, 1.0, 400.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -257,11 +291,22 @@ static void idle(void) {
     for (int i = 0; i < NBPATATOIDE; i++) {
         if (patatoides[i].getPosZ() > 6.0f)
         {
-            patatoides[i].setPosZ(-(NBANNEAU*30));
-            //srand((unsigned int)time(0));
+            patatoides[i].setPosZ(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / -90.0)) - 15.0);
 
-            float nPosPatatoideX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
-            float nPosPatatoideY = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
+            float nPosPatatoideX;
+            if (patatoides[i].getDirection() == -1) {
+                nPosPatatoideX = 35.0f;
+                //patatoides[i].setPosZ(-(NBANNEAU * static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / -90.0)) - 15.0));
+            }
+            else if (patatoides[i].getDirection() == 1) {
+                nPosPatatoideX = -35.0f;
+                //patatoides[i].setPosZ(-(NBANNEAU * static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / -90.0)) - 15.0));
+            }
+            else {
+                nPosPatatoideX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
+                patatoides[i].setPosZ(-(NBANNEAU * 30));
+            }
+            float nPosPatatoideY = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 30.0)) - 15.0;
             patatoides[i].setPosX(nPosPatatoideX);
             patatoides[i].setPosY(nPosPatatoideY);
 
@@ -271,7 +316,45 @@ static void idle(void) {
         }
         else {
 
-            patatoides[i].setPosZ(patatoides[i].getPosZ() + speedAnneauZ);
+            patatoides[i].setPosZ(patatoides[i].getPosZ() + patatoides[i].getSpeed());
+            //printf("PosZ for patatoide %d = %f\n", i, patatoides[i].getPosZ() + speedPatatoideZ);
+        }
+
+        if (patatoides[i].getPosX() < -40.0f || patatoides[i].getPosX() > 40.0f)
+        {
+            patatoides[i].setPosZ(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / -90.0)) - 15.0);
+
+            float nPosPatatoideX;
+            if (patatoides[i].getDirection() == -1) {
+                nPosPatatoideX = 35.0f;
+                //patatoides[i].setPosZ(-(NBANNEAU * static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / -90.0)) - 15.0));
+            }
+            else if (patatoides[i].getDirection() == 1) {
+                nPosPatatoideX = -35.0f;
+                //patatoides[i].setPosZ(-(NBANNEAU * static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / -90.0)) - 15.0));
+            }
+            else {
+                nPosPatatoideX = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 10.0)) - 5.0;
+                patatoides[i].setPosZ(-(NBANNEAU * 30));
+            }
+            float nPosPatatoideY = static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 30.0)) - 15.0;
+            patatoides[i].setPosX(nPosPatatoideX);
+            patatoides[i].setPosY(nPosPatatoideY);
+
+            patatoides[i].deBoom();
+            /*printf("PosX for patatoide %d = %f\n", i, nPosPatatoideX);
+            printf("PosY for patatoide %d = %f\n", i, nPosPatatoideY);*/
+        }
+        else {
+
+            patatoides[i].setPosZ(patatoides[i].getPosZ() + patatoides[i].getSpeed());
+            if (patatoides[i].getDirection() == 1) {
+                patatoides[i].setPosX(patatoides[i].getPosX() + patatoides[i].getSpeed());
+            }
+            else if (patatoides[i].getDirection() == -1) {
+                patatoides[i].setPosX(patatoides[i].getPosX() - patatoides[i].getSpeed());
+            }
+            
             //printf("PosZ for patatoide %d = %f\n", i, patatoides[i].getPosZ() + speedPatatoideZ);
         }
 
@@ -293,12 +376,10 @@ static void keyboard(unsigned char key, int x, int y) {
         exit(0);
         break;
     case 0x20:
-        printf("espace");
         filDeFer = !filDeFer;
         glutPostRedisplay();
         break;
     case 0xd:
-        printf("entree");
         animation = !animation;
         if (animation)
             glutIdleFunc(idle);
@@ -425,7 +506,7 @@ int main(int argc, char** argv) {
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowSize(wTx, wTy);
     glutInitWindowPosition(wPx, wPy);
-    glutCreateWindow("Gestion événementielle de GLUt");
+    glutCreateWindow("La Traversée des Anneaux");
     init();
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(special);
