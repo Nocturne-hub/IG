@@ -71,7 +71,7 @@ static void initPatatoides() {
         patatoides[i].setAxeRotationY(((float)(1 + (rand() % 2))) - 1);
         patatoides[i].setAxeRotationZ(((float)(1 + (rand() % 2))) - 1);
         patatoides[i].setDirection((-1 + (rand() % 3)));
-        patatoides[i].setSpeed(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 0.4)) + 0.01);
+        patatoides[i].setSpeed(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 0.4)) + 0.05);
         printf("Speed : %f\n", patatoides[i].getSpeed());
         float nPosPatatoidesX;
         if (patatoides[i].getDirection() == -1) {
@@ -133,7 +133,6 @@ static void scene(void) {
             glPushMatrix();
             printf("%f\n", static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 0.4)) - 0.01);
             glTranslatef(patatoides[i].getPosX(), patatoides[i].getPosY(), patatoides[i].getPosZ());
-            //glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
             glRotatef(patatoides[i].getAngleRotation(), patatoides[i].getAxeRotationX(), patatoides[i].getAxeRotationY(), patatoides[i].getAxeRotationZ());
             patatoides[i].myPatatoide(1.0f);
             
@@ -143,14 +142,15 @@ static void scene(void) {
         for (int i = 0; i < NBANNEAU; i++) {
             glPushMatrix();
             glTranslatef(anneaux[i].getPosX(), anneaux[i].getPosY(), anneaux[i].getPosZ());
-            //glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
             anneaux[i].myPrecious(0.1, 3.0, 18, 72);
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, blanc);
             glPopMatrix();
+
         }
 
         glPushMatrix();
             glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ());
-            //glMaterialfv(GL_FRONT, GL_DIFFUSE, bleu);
             v.mySolidSpaceShip();
         glPopMatrix();
         
@@ -200,12 +200,12 @@ static void display(void) {
     glPushMatrix();
 
     float cameraPosX = firstPerson ? v.getPosX() : v.getPosX();
-    float cameraPosY = firstPerson ? v.getPosY() : v.getPosY() + 5.0;
+    float cameraPosY = firstPerson ? v.getPosY() : v.getPosY() + 4.0;
     float cameraPosZ = firstPerson ? v.getPosZ() -2.0 : v.getPosZ() + 10.0;
 
     float cameraLookX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraLookY = firstPerson ? v.getPosY() : v.getPosY();
-    float cameraLookZ = firstPerson ? v.getPosZ() - 3.0 : -(v.getPosZ() + 0.5);
+    float cameraLookZ = firstPerson ? v.getPosZ() - 3.0 : -(v.getPosZ() - 0.1);
    
     /*printf("Vaisseau x,y,z : %f %f %f\n", v.getPosX(), v.getPosY(), v.getPosZ());
     printf("Camera x,y,z : %f %f %f\n", cameraPosX, cameraPosY, cameraPosZ);
