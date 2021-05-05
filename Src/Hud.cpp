@@ -35,7 +35,7 @@ void Hud::drawHud(char* text, int valeur, float x, float y) {
     glLoadIdentity();
     glDisable(GL_DEPTH_TEST);
     char buffer[128];
-    if(valeur == NULL)
+    if(valeur == -1000)
         sprintf(buffer, "%s", text);
     else
         sprintf(buffer, "%s : %d",text, valeur);

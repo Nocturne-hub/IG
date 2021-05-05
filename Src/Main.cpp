@@ -13,17 +13,16 @@
 
 /* Variables globales                           */
 
-static int wTx = 640;              // Resolution horizontale de la fenetre
-static int wTy = 480;              // Resolution verticale de la fenetre
-static int wPx = 50;               // Position horizontale de la fenetre
-static int wPy = 50;               // Position verticale de la fenetre
+static int wTx = 1280;              // Resolution horizontale de la fenetre
+static int wTy = 720;              // Resolution verticale de la fenetre
+static int wPx = (glutGet(GLUT_SCREEN_WIDTH) - wTx) /2;               // Position horizontale de la fenetre
+static int wPy = (glutGet(GLUT_SCREEN_HEIGHT) - wTy) / 2;               // Position verticale de la fenetre
 static bool filDeFer = false;
-static float angle = 0.0;
 static bool animation = false;
-static bool gauche = true;
 static bool isMouse = false;
 static bool firstPerson = true;
 static bool lumiere = true;
+static bool lockCam = true;
 
 static const float blanc[] = { 1.0F,1.0F,1.0F,1.0F };
 static const float jaune[] = { 1.0F,1.0F,0.0F,1.0F };
@@ -41,8 +40,8 @@ static float speedDeplacement = 0.9f;
 
 static bool texture = true;
 static unsigned int textureID[3] = { 0,0,0 };
-Hud hud;
 
+Hud hud;
 Vaisseau v;
 Skybox skybox;
 Patatoide patatoides[NBPATATOIDE];
@@ -168,7 +167,6 @@ static void display(void) {
         glDisable(GL_TEXTURE_2D);
     }
 
-    int rotate = gauche ? -1.0 : 1.0;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
@@ -195,9 +193,10 @@ static void display(void) {
     //glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
     glPushMatrix();
 
+
     float cameraPosX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraPosY = firstPerson ? v.getPosY() : v.getPosY() + 4.0;
-    float cameraPosZ = firstPerson ? v.getPosZ() -2.0 : v.getPosZ() + 10.0;
+    float cameraPosZ = firstPerson ? v.getPosZ() -2.0 : v.getPosZ() + 12.0;
 
     float cameraLookX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraLookY = firstPerson ? v.getPosY() : v.getPosY();
@@ -210,15 +209,16 @@ static void display(void) {
     else
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-
-    glRotatef(angle, rotate, 0, 0);
-    glRotatef(rz, 0, 1.0, 0);
+    if (!lockCam && !firstPerson) {
+        glRotatef(rz, 0, 1.0, 0);
+    }
+    
 
 
     scene();
 
     if (!animation)
-        hud.drawHud("Pour lancer le parcours, appuyer sur [entree] !",NULL,-2.5,8.0);
+        hud.drawHud("Pour lancer le parcours, appuyer sur [entree] !",-1000,-2.5,8.0);
 
     hud.drawHud("score", v.getScore(), -8.0, 8.0);
     hud.drawHud("vie", v.getVie(), 8.0, 8.0);
@@ -416,7 +416,12 @@ static void special(int specialKey, int x, int y) {
         lumiere = !lumiere;
         glutPostRedisplay();
         break;
+    case GLUT_KEY_F4:
+        lockCam = !lockCam;
+        glutPostRedisplay();
+        break;
     }
+
 }
 
 static void specialUp(int specialKey, int x, int y) {
@@ -448,10 +453,11 @@ static void mouse(int button, int state, int x, int y) {
 /* avec un bouton presse                        */
 
 static void mouseMotion(int x, int y) {
-    rz += (mouseX - x);
-    mouseX = x;
-    glutPostRedisplay();
-
+    if (!lockCam && !firstPerson) {
+        rz += (mouseX - x);
+        mouseX = x;
+        glutPostRedisplay();
+    }
 }
 
 /* Fonction executee lors du passage            */
