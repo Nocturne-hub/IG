@@ -328,3 +328,11 @@ void Vaisseau::mySolidSpaceShip() {
     glPopMatrix();
     glPopMatrix();
 }
+
+void Vaisseau::reset() {
+    score = 0;
+    vie = 3;
+
+    posX = 0.0f;
+    posY = 0.0f;
+}

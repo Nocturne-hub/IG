@@ -13,10 +13,10 @@
 
 /* Variables globales                           */
 
-static int wTx = 640;              // Resolution horizontale de la fenetre
-static int wTy = 480;              // Resolution verticale de la fenetre
-static int wPx = 50;               // Position horizontale de la fenetre
-static int wPy = 50;               // Position verticale de la fenetre
+static int wTx = 1280;              // Resolution horizontale de la fenetre
+static int wTy = 720;              // Resolution verticale de la fenetre
+static int wPx = 320;               // Position horizontale de la fenetre
+static int wPy = 180;               // Position verticale de la fenetre
 static bool filDeFer = false;
 static float angle = 0.0;
 static bool animation = false;
@@ -24,6 +24,7 @@ static bool gauche = true;
 static bool isMouse = false;
 static bool firstPerson = true;
 static bool lumiere = true;
+static bool mort = false;
 
 static const float blanc[] = { 1.0F,1.0F,1.0F,1.0F };
 static const float jaune[] = { 1.0F,1.0F,0.0F,1.0F };
@@ -64,7 +65,7 @@ static void initAnneaux() {
     }
 }
 
-static void initPatatoides() {
+static void initPatatoides(bool reset) {
     for (int i = 0; i < NBPATATOIDE; i++) {
         patatoides[i].setAngleRotation(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 360.0)) - 0.0);
         patatoides[i].setAxeRotationX(((float)(1 + (rand() % 2))) - 1);
@@ -89,7 +90,7 @@ static void initPatatoides() {
         patatoides[i].setPosX(nPosPatatoidesX);
         patatoides[i].setPosY(nPosPatatoidesY);
         patatoides[i].setPosZ(nPosPatatoidesZ);
-        patatoides[i].chargementTexture("textureAsteroide.png", textureID[1]);
+        if(!reset)patatoides[i].chargementTexture("textureAsteroide.png", textureID[1]);
         patatoides[i].texture = textureID[1];
     }
 }
@@ -115,7 +116,7 @@ static void init(void) {
     v.texture = textureID[0];
     srand((unsigned int)time(0));
     initAnneaux();
-    initPatatoides();
+    initPatatoides(false);
     skybox.chargementTexture("space.png", textureID[2]);
 }
 
@@ -217,8 +218,11 @@ static void display(void) {
 
     scene();
 
-    if (!animation)
+    if (!animation && !mort)
         hud.drawHud("Pour lancer le parcours, appuyer sur [entree] !",-1000,-2.5,8.0);
+
+    if (mort)
+        hud.drawHud("Vous êtes décédé, pour relancer la partie appuyez sur [r] ", -1000, -2.5, 8.0);
 
     hud.drawHud("score", v.getScore(), -8.0, 8.0);
     hud.drawHud("vie", v.getVie(), 8.0, 8.0);
@@ -337,7 +341,14 @@ static void idle(void) {
         if (v.enCollision(patatoides[i])) {
             patatoides[i].boom();
         }
+        if (v.getVie() <= 0) {
+            mort = true;
+            animation = false;
+            glutIdleFunc(NULL);
+            
+        }
     }
+    
 
     glutPostRedisplay();
 }
@@ -355,6 +366,7 @@ static void keyboard(unsigned char key, int x, int y) {
         glutPostRedisplay();
         break;
     case 0xd:
+        if (mort)return;
         animation = !animation;
         if (animation)
             glutIdleFunc(idle);
@@ -362,10 +374,23 @@ static void keyboard(unsigned char key, int x, int y) {
             glutIdleFunc(NULL);
         glutPostRedisplay();
         break;
+    case 'r':
+
+        v.reset();
+        initAnneaux();
+        initPatatoides(true);
+        animation = false;
+        mort = false;
+        glutIdleFunc(NULL);
+        glutPostRedisplay();
+        break;
     }
 }
 
 static void deplacement() {
+
+    if (mort) return;
+
     if (touches[0]) {
         v.setPosX(v.getPosX() - speedDeplacement);
     }

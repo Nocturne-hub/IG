@@ -56,5 +56,6 @@ class Vaisseau {
 		void mySolidSphere(GLdouble height, GLint slices, GLint stacks);
 		bool enCollision(Patatoide p);
 		bool miamAnneau(Anneau a);
+		void reset();
 };
 
