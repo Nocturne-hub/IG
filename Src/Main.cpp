@@ -226,7 +226,7 @@ static void display(void) {
     scene();
 
     if (!animation)
-        hud.drawHud("Pour lancer le parcours, appuyer sur [entree] !",NULL,-2.5,8.0);
+        hud.drawHud("Pour lancer le parcours, appuyer sur [entree] !",-1000,-2.5,8.0);
 
     hud.drawHud("score", v.getScore(), -8.0, 8.0);
     hud.drawHud("vie", v.getVie(), 8.0, 8.0);
