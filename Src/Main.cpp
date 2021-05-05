@@ -15,16 +15,16 @@
 
 static int wTx = 1280;              // Resolution horizontale de la fenetre
 static int wTy = 720;              // Resolution verticale de la fenetre
-static int wPx = 320;               // Position horizontale de la fenetre
-static int wPy = 180;               // Position verticale de la fenetre
+static int wPx = (glutGet(GLUT_SCREEN_WIDTH) - wTx) /2;               // Position horizontale de la fenetre
+static int wPy = (glutGet(GLUT_SCREEN_HEIGHT) - wTy) / 2;               // Position verticale de la fenetre
+
 static bool filDeFer = false;
-static float angle = 0.0;
 static bool animation = false;
-static bool gauche = true;
 static bool isMouse = false;
 static bool firstPerson = true;
 static bool lumiere = true;
 static bool mort = false;
+static bool lockCam = true;
 
 static const float blanc[] = { 1.0F,1.0F,1.0F,1.0F };
 static const float jaune[] = { 1.0F,1.0F,0.0F,1.0F };
@@ -42,8 +42,8 @@ static float speedDeplacement = 0.9f;
 
 static bool texture = true;
 static unsigned int textureID[3] = { 0,0,0 };
-Hud hud;
 
+Hud hud;
 Vaisseau v;
 Skybox skybox;
 Patatoide patatoides[NBPATATOIDE];
@@ -96,9 +96,11 @@ static void initPatatoides(bool reset) {
 }
 
 static void init(void) {
-    const GLfloat shininess[] = { 50.0 };
-    glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
+    const GLfloat shininess[] = { 128.0 };
+    const GLfloat pos[] = {70.0F, 20.0F, 10.0F, 0.0F};
+    //glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, blanc);
+    glLightfv(GL_LIGHT0, GL_POSITION, pos);
     
     //glLightfv(GL_LIGHT2, GL_DIFFUSE, bleu);
     glEnable(GL_LIGHTING);
@@ -167,14 +169,6 @@ static void display(void) {
         glDisable(GL_TEXTURE_2D);
     }
 
-    if (lumiere) {
-        glEnable(GL_LIGHTING);
-    }
-    else {
-        glDisable(GL_LIGHTING);
-    }
-
-    int rotate = gauche ? -1.0 : 1.0;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
@@ -186,7 +180,12 @@ static void display(void) {
     glDepthMask(GL_TRUE);
     glDisable(GL_TEXTURE_CUBE_MAP_ARB);
     glEnable(GL_LIGHTING);
-
+    if (lumiere) {
+        glEnable(GL_LIGHTING);
+    }
+    else {
+        glDisable(GL_LIGHTING);
+    }
     /*const GLfloat light0_position[] = { v.getPosX(),v.getPosY(),v.getPosZ(),1.0 };
     const GLfloat light1_position[] = { 0.0,0.0,0.0,0.0 };
     const GLfloat light2_position[] = { 1.0,-1.0,1.0,0.0 };*/
@@ -196,9 +195,10 @@ static void display(void) {
     //glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
     glPushMatrix();
 
+
     float cameraPosX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraPosY = firstPerson ? v.getPosY() : v.getPosY() + 4.0;
-    float cameraPosZ = firstPerson ? v.getPosZ() -2.0 : v.getPosZ() + 10.0;
+    float cameraPosZ = firstPerson ? v.getPosZ() -2.0 : v.getPosZ() + 12.0;
 
     float cameraLookX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraLookY = firstPerson ? v.getPosY() : v.getPosY();
@@ -211,9 +211,10 @@ static void display(void) {
     else
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-
-    glRotatef(angle, rotate, 0, 0);
-    glRotatef(rz, 0, 1.0, 0);
+    if (!lockCam && !firstPerson) {
+        glRotatef(rz, 0, 1.0, 0);
+    }
+    
 
 
     scene();
@@ -441,7 +442,12 @@ static void special(int specialKey, int x, int y) {
         lumiere = !lumiere;
         glutPostRedisplay();
         break;
+    case GLUT_KEY_F4:
+        lockCam = !lockCam;
+        glutPostRedisplay();
+        break;
     }
+
 }
 
 static void specialUp(int specialKey, int x, int y) {
@@ -473,10 +479,11 @@ static void mouse(int button, int state, int x, int y) {
 /* avec un bouton presse                        */
 
 static void mouseMotion(int x, int y) {
-    rz += (mouseX - x);
-    mouseX = x;
-    glutPostRedisplay();
-
+    if (!lockCam && !firstPerson) {
+        rz += (mouseX - x);
+        mouseX = x;
+        glutPostRedisplay();
+    }
 }
 
 /* Fonction executee lors du passage            */
