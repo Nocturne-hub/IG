@@ -161,7 +161,6 @@ void Vaisseau::chargementTexture(char* filename, unsigned int textureID) {
     if (img) {
         glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
         free(img);
-        printf("Texture chargée %d : %s\n", textureID, filename);
     }
     else {
         printf("Texture non chargée\n");
