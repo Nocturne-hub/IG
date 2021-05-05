@@ -13,10 +13,10 @@
 
 /* Variables globales                           */
 
-static int wTx = 640;              // Resolution horizontale de la fenetre
-static int wTy = 480;              // Resolution verticale de la fenetre
-static int wPx = 50;               // Position horizontale de la fenetre
-static int wPy = 50;               // Position verticale de la fenetre
+static int wTx = 1280;              // Resolution horizontale de la fenetre
+static int wTy = 720;              // Resolution verticale de la fenetre
+static int wPx = (glutGet(GLUT_SCREEN_WIDTH) - wTx) /2;               // Position horizontale de la fenetre
+static int wPy = (glutGet(GLUT_SCREEN_HEIGHT) - wTy) / 2;               // Position verticale de la fenetre
 static bool filDeFer = false;
 static bool animation = false;
 static bool isMouse = false;
@@ -40,8 +40,8 @@ static float speedDeplacement = 0.9f;
 
 static bool texture = true;
 static unsigned int textureID[3] = { 0,0,0 };
-Hud hud;
 
+Hud hud;
 Vaisseau v;
 Skybox skybox;
 Patatoide patatoides[NBPATATOIDE];
@@ -193,6 +193,7 @@ static void display(void) {
     //glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
     glPushMatrix();
 
+
     float cameraPosX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraPosY = firstPerson ? v.getPosY() : v.getPosY() + 4.0;
     float cameraPosZ = firstPerson ? v.getPosZ() -2.0 : v.getPosZ() + 12.0;
@@ -208,8 +209,10 @@ static void display(void) {
     else
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-
-    glRotatef(rz, 0, 1.0, 0);
+    if (!lockCam && !firstPerson) {
+        glRotatef(rz, 0, 1.0, 0);
+    }
+    
 
 
     scene();
@@ -450,10 +453,11 @@ static void mouse(int button, int state, int x, int y) {
 /* avec un bouton presse                        */
 
 static void mouseMotion(int x, int y) {
-    rz += (mouseX - x);
-    mouseX = x;
-    glutPostRedisplay();
-
+    if (!lockCam && !firstPerson) {
+        rz += (mouseX - x);
+        mouseX = x;
+        glutPostRedisplay();
+    }
 }
 
 /* Fonction executee lors du passage            */

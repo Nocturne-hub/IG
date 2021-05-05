@@ -19,6 +19,7 @@ private:
 	float axeRotationZ = 0.0f;
 	int direction = 0.0f;
 	float speed = 0.0f;
+	float speedRotation = 0.0f;
 
 	bool alreadyBoomed = false;
 
