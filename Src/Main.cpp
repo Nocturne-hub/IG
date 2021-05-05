@@ -18,12 +18,11 @@ static int wTy = 480;              // Resolution verticale de la fenetre
 static int wPx = 50;               // Position horizontale de la fenetre
 static int wPy = 50;               // Position verticale de la fenetre
 static bool filDeFer = false;
-static float angle = 0.0;
 static bool animation = false;
-static bool gauche = true;
 static bool isMouse = false;
 static bool firstPerson = true;
 static bool lumiere = true;
+static bool lockCam = true;
 
 static const float blanc[] = { 1.0F,1.0F,1.0F,1.0F };
 static const float jaune[] = { 1.0F,1.0F,0.0F,1.0F };
@@ -173,7 +172,6 @@ static void display(void) {
         glDisable(GL_LIGHTING);
     }
 
-    int rotate = gauche ? -1.0 : 1.0;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
@@ -197,7 +195,7 @@ static void display(void) {
 
     float cameraPosX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraPosY = firstPerson ? v.getPosY() : v.getPosY() + 4.0;
-    float cameraPosZ = firstPerson ? v.getPosZ() -2.0 : v.getPosZ() + 10.0;
+    float cameraPosZ = firstPerson ? v.getPosZ() -2.0 : v.getPosZ() + 12.0;
 
     float cameraLookX = firstPerson ? v.getPosX() : v.getPosX();
     float cameraLookY = firstPerson ? v.getPosY() : v.getPosY();
@@ -211,7 +209,6 @@ static void display(void) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 
-    glRotatef(angle, rotate, 0, 0);
     glRotatef(rz, 0, 1.0, 0);
 
 
@@ -416,7 +413,12 @@ static void special(int specialKey, int x, int y) {
         lumiere = !lumiere;
         glutPostRedisplay();
         break;
+    case GLUT_KEY_F4:
+        lockCam = !lockCam;
+        glutPostRedisplay();
+        break;
     }
+
 }
 
 static void specialUp(int specialKey, int x, int y) {
