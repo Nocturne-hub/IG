@@ -95,9 +95,11 @@ static void initPatatoides() {
 }
 
 static void init(void) {
-    const GLfloat shininess[] = { 50.0 };
-    glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
+    const GLfloat shininess[] = { 128.0 };
+    const GLfloat pos[] = {70.0F, 20.0F, 10.0F, 0.0F};
+    //glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, blanc);
+    glLightfv(GL_LIGHT0, GL_POSITION, pos);
     
     //glLightfv(GL_LIGHT2, GL_DIFFUSE, bleu);
     glEnable(GL_LIGHTING);
@@ -166,13 +168,6 @@ static void display(void) {
         glDisable(GL_TEXTURE_2D);
     }
 
-    if (lumiere) {
-        glEnable(GL_LIGHTING);
-    }
-    else {
-        glDisable(GL_LIGHTING);
-    }
-
     int rotate = gauche ? -1.0 : 1.0;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -185,7 +180,12 @@ static void display(void) {
     glDepthMask(GL_TRUE);
     glDisable(GL_TEXTURE_CUBE_MAP_ARB);
     glEnable(GL_LIGHTING);
-
+    if (lumiere) {
+        glEnable(GL_LIGHTING);
+    }
+    else {
+        glDisable(GL_LIGHTING);
+    }
     /*const GLfloat light0_position[] = { v.getPosX(),v.getPosY(),v.getPosZ(),1.0 };
     const GLfloat light1_position[] = { 0.0,0.0,0.0,0.0 };
     const GLfloat light2_position[] = { 1.0,-1.0,1.0,0.0 };*/
