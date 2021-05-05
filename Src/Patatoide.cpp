@@ -378,79 +378,7 @@ void Patatoide::myPatatoide(GLfloat c) {
     bicubiquePatch(maille, bezier, bezier, points_face4);
     bicubiquePatch(maille, bezier, bezier, points_face5);
     bicubiquePatch(maille, bezier, bezier, points_face6);
-    /*
-    glBegin(GL_QUADS);
 
-    glNormal3f(0, 0, 1.0);
-    //devant
-    glTexCoord2f(1, 1);
-    glVertex3f(-m, m, m);
-    glTexCoord2f(1, 0);
-    glVertex3f(m, m, m);
-    glTexCoord2f(0, 0);
-    glVertex3f(m, -m, m);
-    glTexCoord2f(0, 1);
-    glVertex3f(-m, -m, m);
-
-    glNormal3f(0, 0, -1.0);
-    //arriere
-    glTexCoord2f(1, 1);
-    glVertex3f(-m, m, -m);
-    glTexCoord2f(1, 0);
-    glVertex3f(m, m, -m);
-    glTexCoord2f(0, 0);
-    glVertex3f(m, -m, -m);
-    glTexCoord2f(0, 1);
-    glVertex3f(-m, -m, -m);
-
-    glNormal3f(-1.0, 0, 0.0);
-    //gauche
-    glTexCoord2f(1, 1);
-    glVertex3f(-m, m, m);
-    glTexCoord2f(1, 0);
-    glVertex3f(-m, m, -m);
-    glTexCoord2f(0, 0);
-    glVertex3f(-m, -m, -m);
-    glTexCoord2f(0, 1);
-    glVertex3f(-m, -m, m);
-
-    glNormal3f(1.0, 0, 0.0);
-    //droite
-    glTexCoord2f(1, 1);
-    glVertex3f(m, m, m);
-    glTexCoord2f(1, 0);
-    glVertex3f(m, -m, m);
-    glTexCoord2f(0, 0);
-    glVertex3f(m, -m, -m);
-    glTexCoord2f(0, 1);
-    glVertex3f(m, m, -m);
-
-    glNormal3f(0.0, 1.0, 0.0);
-    //dessus
-    glTexCoord2f(1, 1);
-    glVertex3f(-m, m, m);
-    glTexCoord2f(1, 0);
-    glVertex3f(m, m, m);
-    glTexCoord2f(0, 0);
-    glVertex3f(m, m, -m);
-    glTexCoord2f(0, 1);
-    glVertex3f(-m, m, -m);
-
-    glNormal3f(0.0, -1.0, 0.0);
-    //dessous
-    glTexCoord2f(1, 1);
-    glVertex3f(-m, -m, m);
-    glTexCoord2f(1, 0);
-    glVertex3f(m, -m, m);
-    glTexCoord2f(0, 0);
-    glVertex3f(m, -m, -m);
-    glTexCoord2f(0, 1);
-    glVertex3f(-m, -m, -m);
-
-
-
-    glEnd();
-    */
 }
 
 void Patatoide::chargementTexture(char* filename, unsigned int textureID) {
@@ -462,7 +390,6 @@ void Patatoide::chargementTexture(char* filename, unsigned int textureID) {
     if (img) {
         glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
         free(img);
-        printf("Texture chargee %d : %s\n", textureID, filename);
     }
     else {
         printf("Texture non chargee\n");
