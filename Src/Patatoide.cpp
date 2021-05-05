@@ -237,6 +237,10 @@ void Patatoide::setSpeed(float s) {
     speed = s;
 }
 
+void Patatoide::setSpeedRotation(float s) {
+    speedRotation = s;
+}
+
 float Patatoide::getPosX() {
     return posX;
 }
@@ -271,6 +275,10 @@ int Patatoide::getDirection() {
 
 float Patatoide::getSpeed() {
     return speed;
+}
+
+float Patatoide::getSpeedRotation() {
+    return speedRotation;
 }
 
 Patatoide::Patatoide(float x, float y, float z, unsigned int textureId ) {

@@ -39,6 +39,7 @@ public:
 	float getAxeRotationZ();
 	int getDirection();
 	float getSpeed();
+	float getSpeedRotation();
 
 	void setPosX(float x);
 	void setPosY(float y);
@@ -49,6 +50,7 @@ public:
 	void setAxeRotationZ(float axe);
 	void setDirection(int dir);
 	void setSpeed(float speed);
+	void setSpeedRotation(float speedRotation);
 
 	void boom();
 	bool isBoomed();

@@ -67,12 +67,23 @@ static void initAnneaux() {
 
 static void initPatatoides(bool reset) {
     for (int i = 0; i < NBPATATOIDE; i++) {
-        patatoides[i].setAngleRotation(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 360.0)) - 0.0);
-        patatoides[i].setAxeRotationX(((float)(1 + (rand() % 2))) - 1);
-        patatoides[i].setAxeRotationY(((float)(1 + (rand() % 2))) - 1);
-        patatoides[i].setAxeRotationZ(((float)(1 + (rand() % 2))) - 1);
+        patatoides[i].setAngleRotation(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 360.0)));
+        float sommeAxe = 0.0f;
+        float x = 0.0f;
+        float y = 0.0f;
+        float z = 0.0f;
+        do {
+            x = ((float)(1 + (rand() % 2))) - 1;
+            y = ((float)(1 + (rand() % 2))) - 1;
+            z = ((float)(1 + (rand() % 2))) - 1;
+            sommeAxe = x + y + z;
+        } while (sommeAxe == 0.0);
+        patatoides[i].setAxeRotationX(x);
+        patatoides[i].setAxeRotationY(y);
+        patatoides[i].setAxeRotationZ(z);
         patatoides[i].setDirection((-1 + (rand() % 3)));
         patatoides[i].setSpeed(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 0.4)) + 0.05);
+        patatoides[i].setSpeedRotation(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / 2.0)));
         float nPosPatatoidesX;
         if (patatoides[i].getDirection() == -1) {
             nPosPatatoidesX = 35.0f;
@@ -135,6 +146,8 @@ static void scene(void) {
             glTranslatef(patatoides[i].getPosX(), patatoides[i].getPosY(), patatoides[i].getPosZ());
             glRotatef(patatoides[i].getAngleRotation(), patatoides[i].getAxeRotationX(), patatoides[i].getAxeRotationY(), patatoides[i].getAxeRotationZ());
             patatoides[i].myPatatoide(1.0f);
+            
+
             
             glPopMatrix();
         }
@@ -215,8 +228,6 @@ static void display(void) {
         glRotatef(rz, 0, 1.0, 0);
     }
     
-
-
     scene();
 
     if (!animation && !mort)
@@ -280,6 +291,7 @@ static void idle(void) {
     }
 
     for (int i = 0; i < NBPATATOIDE; i++) {
+        patatoides[i].setAngleRotation(patatoides[i].getAngleRotation() + patatoides[i].getSpeedRotation());
         if (patatoides[i].getPosZ() > 6.0f)
         {
             patatoides[i].setPosZ(static_cast<float> (rand()) / (static_cast<float> (RAND_MAX / -90.0)) - 15.0);
