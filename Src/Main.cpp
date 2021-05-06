@@ -3,9 +3,12 @@
 #include "Anneau.h"
 #include "Skybox.h"
 #include "Hud.h"
+#include "Laser.h"
 #include <time.h>
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <ctime>
 
 #define PI 3.1415926535898
 #define NBANNEAU 5
@@ -21,10 +24,14 @@ static int wPy = (glutGet(GLUT_SCREEN_HEIGHT) - wTy) / 2;               // Posit
 static bool filDeFer = false;
 static bool animation = false;
 static bool isMouse = false;
-static bool firstPerson = true;
+static bool firstPerson = false;
 static bool lumiere = true;
 static bool mort = false;
 static bool lockCam = true;
+/*static bool depassement = false;
+static bool clignotement = false;*/
+static bool tire = false;
+
 
 static const float blanc[] = { 1.0F,1.0F,1.0F,1.0F };
 static const float jaune[] = { 1.0F,1.0F,0.0F,1.0F };
@@ -37,17 +44,19 @@ static int mouseX = 0;
 static bool touches[] = { false, false, false, false };
 
 static float speedAnneauZ = 0.3f;
-static float speedPatatoideZ = 0.5f;
 static float speedDeplacement = 0.9f;
 
 static bool texture = true;
 static unsigned int textureID[3] = { 0,0,0 };
+
+//std::chrono::time_point<std::chrono::system_clock> timeStart = std::chrono::system_clock::now();
 
 Hud hud;
 Vaisseau v;
 Skybox skybox;
 Patatoide patatoides[NBPATATOIDE];
 Anneau anneaux[NBANNEAU];
+Laser l[3];
 
 
 /* Fonction d'initialisation des parametres     */
@@ -106,13 +115,30 @@ static void initPatatoides(bool reset) {
     }
 }
 
+static void initLaser() {
+    for (int i = 0; i < 3; i++) {
+        l[i] = Laser(v, i);
+    }
+}
+
 static void init(void) {
     const GLfloat shininess[] = { 128.0 };
     const GLfloat pos[] = {70.0F, 20.0F, 10.0F, 0.0F};
+    const GLfloat pos1[] = { v.getPosX() + 20.0F, 0.0F, 10.0F, 0.0F };
+    const GLfloat pos2[] = { v.getPosX() - 20.0F, 0.0F, 10.0F, 0.0F };
+    const GLfloat pos3[] = { 0.0F, v.getPosY() + 20.0F, 10.0F, 0.0F };
+    const GLfloat pos4[] = { 0.0F, v.getPosY() - 20.0F, 10.0F, 0.0F };
     //glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, blanc);
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    
+    glLightfv(GL_LIGHT1, GL_AMBIENT, rouge);
+    glLightfv(GL_LIGHT1, GL_POSITION, pos1);
+    glLightfv(GL_LIGHT2, GL_AMBIENT, rouge);
+    glLightfv(GL_LIGHT2, GL_POSITION, pos2);
+    glLightfv(GL_LIGHT3, GL_AMBIENT, rouge);
+    glLightfv(GL_LIGHT3, GL_POSITION, pos3);
+    glLightfv(GL_LIGHT4, GL_AMBIENT, rouge);
+    glLightfv(GL_LIGHT4, GL_POSITION, pos4);
     //glLightfv(GL_LIGHT2, GL_DIFFUSE, bleu);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
@@ -123,10 +149,11 @@ static void init(void) {
     glEnable(GL_NORMALIZE);
     glEnable(GL_AUTO_NORMAL);
     glGenTextures(3, textureID);
-
+    
     v = Vaisseau(1.0f);
     v.chargementTexture("textureVaisseau.png", textureID[0]);
     v.texture = textureID[0];
+    initLaser();
     srand((unsigned int)time(0));
     initAnneaux();
     initPatatoides(false);
@@ -140,35 +167,43 @@ static void initSkybox() {
 /* Scene dessinee                               */
 
 static void scene(void) {
+
     glPushMatrix();
-        for (int i = 0; i < NBPATATOIDE; i++) {
-            glPushMatrix();
-            glTranslatef(patatoides[i].getPosX(), patatoides[i].getPosY(), patatoides[i].getPosZ());
-            glRotatef(patatoides[i].getAngleRotation(), patatoides[i].getAxeRotationX(), patatoides[i].getAxeRotationY(), patatoides[i].getAxeRotationZ());
-            patatoides[i].myPatatoide(1.0f);
-            
-
-            
-            glPopMatrix();
-        }
-
-        for (int i = 0; i < NBANNEAU; i++) {
-            glPushMatrix();
-            glTranslatef(anneaux[i].getPosX(), anneaux[i].getPosY(), anneaux[i].getPosZ());
-            glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
-            anneaux[i].myPrecious(0.1, 3.0, 18, 72);
-            glMaterialfv(GL_FRONT, GL_DIFFUSE, blanc);
-            glPopMatrix();
-
-        }
-
+    for (int i = 0; i < NBPATATOIDE; i++) {
         glPushMatrix();
-            glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ());
-            v.mySolidSpaceShip();
+        glTranslatef(patatoides[i].getPosX(), patatoides[i].getPosY(), patatoides[i].getPosZ());
+        glRotatef(patatoides[i].getAngleRotation(), patatoides[i].getAxeRotationX(), patatoides[i].getAxeRotationY(), patatoides[i].getAxeRotationZ());
+        patatoides[i].myPatatoide(1.0f);
         glPopMatrix();
-        
-        
-   glPopMatrix();
+    }
+
+    for (int i = 0; i < NBANNEAU; i++) {
+        glPushMatrix();
+        glTranslatef(anneaux[i].getPosX(), anneaux[i].getPosY(), anneaux[i].getPosZ());
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, jaune);
+        anneaux[i].myPrecious(0.1, 3.0, 18, 72);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, blanc);
+        glPopMatrix();
+
+    }
+
+    glPushMatrix();
+    glTranslatef(v.getPosX(), v.getPosY(), v.getPosZ());
+    v.mySolidSpaceShip();
+    glPopMatrix();
+
+    glPushMatrix();
+
+    for (int i = 0; i < 3; i++) {
+        glTranslatef(l[i].getPosX(), l[i].getPosY(), l[i].getPosZ());
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
+        l[i].mySolidLaser();
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, blanc);
+        glPopMatrix();
+    }
+
+    glPopMatrix();
+    
 }
 
 /* Fonction executee lors d'un rafraichissement */
@@ -199,6 +234,30 @@ static void display(void) {
     else {
         glDisable(GL_LIGHTING);
     }
+    
+    
+    /*
+    if (depassement && clignotement) {
+        glDisable(GL_LIGHT0);
+        glEnable(GL_LIGHT1);
+        glEnable(GL_LIGHT2);
+        glEnable(GL_LIGHT3);
+        glEnable(GL_LIGHT4);
+        clignotement = false;
+    }
+    else {
+        glEnable(GL_LIGHT0);
+        glDisable(GL_LIGHT1);
+        glDisable(GL_LIGHT2);
+        glDisable(GL_LIGHT3);
+        glDisable(GL_LIGHT4);
+        std::chrono::time_point<std::chrono::system_clock> timeEnd = std::chrono::system_clock::now();
+        double nTime = std::chrono::duration_cast<std::chrono::milliseconds>(timeEnd - timeStart).count() / 1000.0;
+        if (nTime >= 1.0) {
+            clignotement = true;
+        }
+    }*/
+
     /*const GLfloat light0_position[] = { v.getPosX(),v.getPosY(),v.getPosZ(),1.0 };
     const GLfloat light1_position[] = { 0.0,0.0,0.0,0.0 };
     const GLfloat light2_position[] = { 1.0,-1.0,1.0,0.0 };*/
@@ -267,6 +326,17 @@ static void reshape(int wx, int wy) {
 /* n'est en file d'attente                      */
 
 static void idle(void) {
+    if (tire) {
+        for (int i = 0; i < 3; i++) {
+            l[i].setPosZ(l[i].getPosZ() - 0.1);
+        }
+    }
+
+    if (v.getScore() % 5 == 0 && v.getScore() != 0) {
+        speedAnneauZ += 0.003;
+        speedDeplacement += 0.003;
+    }
+
     for (int i = 0; i < NBANNEAU; i++) {
         if (anneaux[i].getPosZ() > 6.0f)
         {
@@ -291,6 +361,7 @@ static void idle(void) {
     }
 
     for (int i = 0; i < NBPATATOIDE; i++) {
+
         patatoides[i].setAngleRotation(patatoides[i].getAngleRotation() + patatoides[i].getSpeedRotation());
         if (patatoides[i].getPosZ() > 6.0f)
         {
@@ -388,13 +459,16 @@ static void keyboard(unsigned char key, int x, int y) {
         glutPostRedisplay();
         break;
     case 'r':
-
         v.reset();
         initAnneaux();
         initPatatoides(true);
         animation = false;
         mort = false;
         glutIdleFunc(NULL);
+        glutPostRedisplay();
+        break;
+    case 'f':
+        tire = true;
         glutPostRedisplay();
         break;
     }
@@ -404,18 +478,26 @@ static void deplacement() {
 
     if (mort) return;
 
-    if (touches[0]) {
+    if (touches[0]) {   //Gauche
         v.setPosX(v.getPosX() - speedDeplacement);
     }
-    if (touches[1]) {
+    if (touches[1]) {   //Droite
         v.setPosX(v.getPosX() + speedDeplacement);
     }
-    if (touches[2]) {
+    if (touches[2]) {   //Haut
         v.setPosY(v.getPosY() + speedDeplacement);
     }
-    if (touches[3]) {
+    if (touches[3]) {   //Bas
         v.setPosY(v.getPosY() - speedDeplacement);
     }
+
+   /* if (v.getPosX() <= -20.0f || v.getPosX() >= 20.0f || v.getPosY() <= -20.0f || v.getPosY() >= 20.0f) {
+        depassement = true;
+    }
+    else {
+        depassement = false;
+    }*/
+    
     glutPostRedisplay();
 }
 

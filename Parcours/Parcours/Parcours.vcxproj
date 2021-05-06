@@ -108,6 +108,7 @@
     <ClCompile Include="..\..\Src\Coord3D\TG3D.cpp" />
     <ClCompile Include="..\..\Src\Coord3D\Tr3D.cpp" />
     <ClCompile Include="..\..\Src\Hud.cpp" />
+    <ClCompile Include="..\..\Src\Laser.cpp" />
     <ClCompile Include="..\..\Src\Patatoide.cpp" />
     <ClCompile Include="..\..\Src\Skybox.cpp" />
     <ClCompile Include="..\..\Src\Texture\ChargePngFile.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="..\..\Include\TG3D.h" />
     <ClInclude Include="..\..\Include\Tr3D.h" />
     <ClInclude Include="..\..\Include\Vaisseau.h" />
+    <ClInclude Include="..\..\Src\Laser.h" />
     <ClInclude Include="..\..\Src\Texture\ChargePngFile.h" />
     <ClInclude Include="..\..\Src\Texture\Espace3UC.h" />
     <ClInclude Include="..\..\Src\Texture\Image.h" />

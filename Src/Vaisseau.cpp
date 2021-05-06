@@ -265,6 +265,92 @@ void Vaisseau::mySolidCone(GLdouble base, GLdouble height, GLint slices, GLint s
     gluDeleteQuadric(cone);
 }
 
+void Vaisseau::mySolidCube(double c) {
+    double c2 = c / 2;
+    glBegin(GL_QUADS);
+    //Face avant
+    glNormal3f(0.0f, 0.0f, 1.0f);
+    glTexCoord2f(0, 1);
+    glVertex3f(-c2, c2, c2);
+    glTexCoord2f(1, 1);
+    glVertex3f(c2, c2, c2);
+    glTexCoord2f(1, 0);
+    glVertex3f(c2, -c2, c2);
+    glTexCoord2f(0, 0);
+    glVertex3f(-c2, -c2, c2);
+
+    //Face arriere
+    glNormal3f(0.0f, 0.0f, -1.0f);
+
+    glTexCoord2f(0, 1);
+    glVertex3f(-c2, c2, -c2);
+    glTexCoord2f(1, 1);
+    glVertex3f(c2, c2, -c2);
+    glTexCoord2f(1, 0);
+    glVertex3f(c2, -c2, -c2);
+    glTexCoord2f(0, 0);
+    glVertex3f(-c2, -c2, -c2);
+
+    //Face gauche
+    glNormal3f(-1.0f, 0.0f, 0.0f);
+
+    glTexCoord2f(0, 1);
+    glVertex3f(-c2, c2, -c2);
+    glTexCoord2f(1, 1);
+    glVertex3f(-c2, c2, c2);
+    glTexCoord2f(1, 0);
+    glVertex3f(-c2, -c2, c2);
+    glTexCoord2f(0, 0);
+    glVertex3f(-c2, -c2, -c2);
+
+    //Face droite
+    glNormal3f(1.0f, 0.0f, 0.0f);
+
+    glTexCoord2f(1, 1);
+    glVertex3f(c2, c2, c2);
+    glTexCoord2f(0, 1);
+    glVertex3f(c2, c2, -c2);
+    glTexCoord2f(0, 0);
+    glVertex3f(c2, -c2, -c2);
+    glTexCoord2f(1, 0);
+    glVertex3f(c2, -c2, c2);
+
+    //face dessus
+    glNormal3f(0.0f, 1.0f, 0.0f);
+
+    glTexCoord2f(0, 1);
+    glVertex3f(-c2, c2, -c2);
+    glTexCoord2f(1, 1);
+    glVertex3f(c2, c2, -c2);
+    glTexCoord2f(1, 0);
+    glVertex3f(c2, c2, c2);
+    glTexCoord2f(0, 0);
+    glVertex3f(-c2, c2, c2);
+
+    //face dessous
+    glNormal3f(0.0f, -1.0f, 0.0f);
+
+    glTexCoord2f(0, 1);
+    glVertex3f(c2, -c2, -c2);
+    glTexCoord2f(1, 1);
+    glVertex3f(-c2, -c2, -c2);
+    glTexCoord2f(1, 0);
+    glVertex3f(-c2, -c2, c2);
+    glTexCoord2f(0, 0);
+    glVertex3f(c2, -c2, c2);
+
+
+    glEnd();
+}
+
+void Vaisseau::mySolidCanon() {
+    glPushMatrix();
+    mySolidCube(0.4);
+    glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+    mySolidCylindre(0.15, 1.5, 50, 50);
+    glPopMatrix();
+}
+
 void Vaisseau::mySolidShipWing(double c, bool rigth) {
     glPushMatrix();
     if (rigth) {
@@ -275,14 +361,22 @@ void Vaisseau::mySolidShipWing(double c, bool rigth) {
         glPopMatrix();
         glTranslatef(0.0f, 0.0f, c);
         mySolidCone(c / 2, c, 50, 50);
+        glPushMatrix();
+        glTranslatef(0.0f, c/2+0.25, -c/1.5);
+        mySolidCanon();
+        glPopMatrix();
+        
     }
     else {
         Quadrilatere(c);
         glTranslatef(0.0f, 0.0f, c);
         mySolidCone(c / 2, c, 50, 50);
+        glPushMatrix();
+        glTranslatef(0.0f, c/2+0.25, -c/1.5);
+        mySolidCanon();
+        glPopMatrix();
     }
     glPopMatrix();
-    
 }
 
 void Vaisseau::mySolidSphere(GLdouble height, GLint slices, GLint stacks) {
@@ -301,6 +395,11 @@ void Vaisseau::mySolidSpaceShipBody(GLdouble base, GLdouble height, GLint slices
     mySolidCylindre(base, height, 500, 50);
     glTranslatef(0.0f, 0.0f, height);
     mySolidSphere(base, 50, 50);
+    glPushMatrix();
+    glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+    glTranslatef(0.0f, -base, 0.0f);
+    mySolidCanon();
+    glPopMatrix();
     glPopMatrix();
 }
 

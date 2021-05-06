@@ -35,6 +35,8 @@ class Vaisseau {
 		Vaisseau();
 		Vaisseau(float t);
 
+		float coordCanons[3][3] = { {0.0f, -1.0f, -1.5f}, {1.25f, 0.9f, 1.0f}, {-1.25f, 0.9f, 1.0f} };
+
 		unsigned int texture;
 		void mySolidVaisseau(float c);
 		float getPosX();
@@ -47,6 +49,8 @@ class Vaisseau {
 		int getVie();
 
 		void chargementTexture(char* filename, unsigned int textureID);
+		void mySolidCanon();
+		void mySolidCube(double c);
 		void mySolidSpaceShip();
 		void mySolidShipWing(double c, bool rigth);
 		void mySolidSpaceShipBody(GLdouble base, GLdouble height, GLint slices, GLint stacks);
