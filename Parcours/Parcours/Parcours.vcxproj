@@ -152,6 +152,7 @@
     <ClInclude Include="..\..\Include\CH3D.h" />
     <ClInclude Include="..\..\Include\Dir3D.h" />
     <ClInclude Include="..\..\Include\Hud.h" />
+    <ClInclude Include="..\..\Include\Laser.h" />
     <ClInclude Include="..\..\Include\Patatoide.h" />
     <ClInclude Include="..\..\Include\Pos3D.h" />
     <ClInclude Include="..\..\Include\Rt3D.h" />
@@ -160,7 +161,6 @@
     <ClInclude Include="..\..\Include\TG3D.h" />
     <ClInclude Include="..\..\Include\Tr3D.h" />
     <ClInclude Include="..\..\Include\Vaisseau.h" />
-    <ClInclude Include="..\..\Src\Laser.h" />
     <ClInclude Include="..\..\Src\Texture\ChargePngFile.h" />
     <ClInclude Include="..\..\Src\Texture\Espace3UC.h" />
     <ClInclude Include="..\..\Src\Texture\Image.h" />

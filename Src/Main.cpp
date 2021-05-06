@@ -418,8 +418,7 @@ static void idle(void) {
             }
             else if (patatoides[i].getDirection() == -1) {
                 patatoides[i].setPosX(patatoides[i].getPosX() - patatoides[i].getSpeed());
-            }
-            
+            }          
         }
 
         if (v.enCollision(patatoides[i])) {

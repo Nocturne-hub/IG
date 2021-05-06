@@ -266,7 +266,7 @@
     <ClInclude Include="..\..\Include\Hud.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\Laser.h">
+    <ClInclude Include="..\..\Include\Laser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
