@@ -293,7 +293,7 @@ static void display(void) {
         hud.drawHud("Pour lancer le parcours, appuyer sur [entree] !",-1000,-2.5,8.0);
 
     if (mort)
-        hud.drawHud("Vous êtes décédé, pour relancer la partie appuyez sur [r] ", -1000, -2.5, 8.0);
+        hud.drawHud("Vous etes decede, pour relancer la partie appuyez sur [r] ", -1000, -2.5, 8.0);
 
     hud.drawHud("score", v.getScore(), -8.0, 8.0);
     hud.drawHud("vie", v.getVie(), 8.0, 8.0);
