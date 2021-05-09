@@ -12,6 +12,5 @@ class Hud {
 
 public :
 	void drawHud(char* text, int valeur, float x, float y);
-	void chargementTexture(char* filename, unsigned int textureID);
 
 };

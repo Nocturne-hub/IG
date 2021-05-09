@@ -1,26 +1,5 @@
 #include "Hud.h";
 
-
-void Hud::chargementTexture(char* filename, unsigned int textureID) {
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    { int rx;
-    int ry;
-    unsigned char* img = chargeImagePng(filename, &rx, &ry);
-    if (img) {
-        glTexImage2D(GL_TEXTURE_2D, 0, 3, rx, ry, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
-        free(img);
-        printf("Texture chargée %d : %s\n", textureID, filename);
-    }
-    else {
-        printf("Texture non chargée\n");
-    } }
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-}
-
 void Hud::drawHud(char* text, int valeur, float x, float y) {
 
     glDisable(GL_TEXTURE_2D);
