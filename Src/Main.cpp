@@ -184,7 +184,6 @@ static void scene(void) {
         anneaux[i].myPrecious(0.1, 3.0, 18, 72);
         glMaterialfv(GL_FRONT, GL_DIFFUSE, blanc);
         glPopMatrix();
-
     }
 
     glPushMatrix();
@@ -192,16 +191,17 @@ static void scene(void) {
     v.mySolidSpaceShip();
     glPopMatrix();
 
-    glPushMatrix();
-
     for (int i = 0; i < 3; i++) {
+        glPushMatrix();
+        l[i].setPosX(v.getPosX() + v.coordCanons[i][0]);
+        l[i].setPosY(v.getPosY() + v.coordCanons[i][1]);
         glTranslatef(l[i].getPosX(), l[i].getPosY(), l[i].getPosZ());
         glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
         l[i].mySolidLaser();
         glMaterialfv(GL_FRONT, GL_DIFFUSE, blanc);
         glPopMatrix();
     }
-
+    
     glPopMatrix();
     
 }
@@ -424,6 +424,14 @@ static void idle(void) {
         if (v.enCollision(patatoides[i])) {
             patatoides[i].boom();
         }
+
+        for (int j = 0; j < 3; j++) {
+            if (l[j].enCollision(patatoides[i])) {
+                patatoides[i].boom();
+                printf("Colision");
+            }
+        }
+
         if (v.getVie() <= 0) {
             mort = true;
             animation = false;
@@ -461,8 +469,12 @@ static void keyboard(unsigned char key, int x, int y) {
         v.reset();
         initAnneaux();
         initPatatoides(true);
+        initLaser();
         animation = false;
         mort = false;
+        tire = false;
+        speedAnneauZ = 0.3f;
+        speedDeplacement = 0.9f;
         glutIdleFunc(NULL);
         glutPostRedisplay();
         break;

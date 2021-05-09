@@ -83,7 +83,7 @@ bool Laser::enCollision(Patatoide p) {
     float absZ = abs(p.getPosZ() - posZ);
 
     if (absX <= tailleX && absY <= (tailleY) && absZ <= tailleZ) {
-
+        printf("AIE");
         return true;
     }
 
