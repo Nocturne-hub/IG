@@ -465,7 +465,7 @@ static void keyboard(unsigned char key, int x, int y) {
 
 static void deplacement() {
 
-    if (mort) return;
+    if (mort || !animation) return;
 
     if (v.getPosX() <= -20.0f || v.getPosX() >= 20.0f || v.getPosY() <= -20.0f || v.getPosY() >= 20.0f) {
         depassement = true;
