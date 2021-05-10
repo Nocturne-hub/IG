@@ -63,7 +63,6 @@ bool Vaisseau::enCollision(Patatoide p) {
 
     if (absX <= tailleX && absY <= (tailleY) && absZ <= tailleZ) {
         vie--;
-        printf("vie %d\n", vie);
         return true;
     }
 
@@ -81,7 +80,6 @@ bool Vaisseau::miamAnneau(Anneau a) {
 
     if (absX <= tailleX && absY <= (tailleY + 4.0) && absZ <= tailleZ) {
         score++;
-        printf("score %d\n", score);
         return true;
     }
 
