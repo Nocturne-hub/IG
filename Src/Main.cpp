@@ -30,6 +30,7 @@ static bool mort = false;
 static bool lockCam = true;
 static bool depassement = false;
 static bool tire = false;
+static bool fullScreen = false;
 static int nbTire = 0;
 static float posXTir = 0;
 static float posYTir = 0;
@@ -544,6 +545,18 @@ static void special(int specialKey, int x, int y) {
     case GLUT_KEY_F4:
         lockCam = !lockCam;
         glutPostRedisplay();
+        break;
+    case GLUT_KEY_F5:
+        if (!fullScreen)
+        {
+            glutFullScreen();
+            fullScreen = true;
+        }
+        else {
+            glutPositionWindow(wPx, wPy);
+            glutReshapeWindow(1280, 720);
+            fullScreen = false;
+        }
         break;
     }
 
