@@ -296,7 +296,6 @@ static void display(void) {
 /* de la taille de la fenetre OpenGL            */
 
 static void reshape(int wx, int wy) {
-    printf("R\n");
     wTx = wx;
     wTy = wy;
     glViewport(0, 0, wx, wy);
@@ -418,7 +417,6 @@ static void idle(void) {
             for (int j = 0; j < 3; j++) {
                 if (l[j].enCollision(patatoides[i])) {
                     patatoides[i].boom();
-                    printf("Colision");
                 }
             }
         }

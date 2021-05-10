@@ -85,7 +85,6 @@ bool Laser::enCollision(Patatoide p) {
 
 
     if (absX <= tailleX + 1.0f && absY <= tailleY + 1.0f && absZ <= tailleZ + 1.0f) {
-        printf("AIE");
         return true;
     }
 
