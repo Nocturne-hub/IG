@@ -31,6 +31,9 @@ static bool lockCam = true;
 static bool depassement = false;
 static bool tire = false;
 static int nbTire = 0;
+static float posXTir = 0;
+static float posYTir = 0;
+
 
 
 static const float blanc[] = { 1.0F,1.0F,1.0F,1.0F };
@@ -190,8 +193,8 @@ static void scene(void) {
         float setX = v.getPosX() + v.coordCanons[i][0];
         float setY = v.getPosY() + v.coordCanons[i][1];
         if (tire) {
-            setX = v.coordCanons[i][0];
-            setY = v.coordCanons[i][1];
+            setX = posXTir + v.coordCanons[i][0];
+            setY = posYTir + v.coordCanons[i][1];
         }
         l[i].setPosX(setX);
         l[i].setPosY(setY);
@@ -469,6 +472,8 @@ static void keyboard(unsigned char key, int x, int y) {
     case 'f':
         tire = true;
         nbTire = v.getVie();
+        posXTir = v.getPosX();
+        posYTir = v.getPosY();
         glutPostRedisplay();
         break;
     }
