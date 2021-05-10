@@ -33,8 +33,7 @@ static bool tire = false;
 static int nbTire = 0;
 static float posXTir = 0;
 static float posYTir = 0;
-
-
+static bool tirCharge = true;
 
 static const float blanc[] = { 1.0F,1.0F,1.0F,1.0F };
 static const float jaune[] = { 1.0F,1.0F,0.0F,1.0F };
@@ -269,7 +268,7 @@ static void display(void) {
     
     scene();
 
-    if (depassement && !mort) {
+    if (depassement && !mort && animation) {
         hud.drawHud("Vous sortez de la zone de jeu, revenez vers le centre", -1000, -2.5, 8.0);
     }
     if (!animation && !mort)
@@ -278,7 +277,8 @@ static void display(void) {
     if (mort)
         hud.drawHud("Vous etes decede, pour relancer la partie appuyez sur [r] ", -1000, -2.5, 8.0);
 
-    
+    if (tirCharge)
+        hud.drawHud("Tir charge ! [f] ", -1000, 7.0, -9.0);
     hud.drawHud("score", v.getScore(), -8.0, 8.0);
     hud.drawHud("vie", v.getVie(), 8.0, 8.0);
 
@@ -317,6 +317,7 @@ static void idle(void) {
         if (l[0].getPosZ() < -40.0f) {
             initLaser();
             tire = false;
+            tirCharge = true;
         }
     }
 
@@ -430,7 +431,6 @@ static void idle(void) {
         }
     }
     
-
     glutPostRedisplay();
 }
 
@@ -471,6 +471,7 @@ static void keyboard(unsigned char key, int x, int y) {
         break;
     case 'f':
         tire = true;
+        tirCharge = false;
         nbTire = v.getVie();
         posXTir = v.getPosX();
         posYTir = v.getPosY();
