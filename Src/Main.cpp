@@ -187,8 +187,14 @@ static void scene(void) {
     }
     for (int i = 0; i < nbLaser; i++) {
         glPushMatrix();
-        l[i].setPosX(v.getPosX() + v.coordCanons[i][0]);
-        l[i].setPosY(v.getPosY() + v.coordCanons[i][1]);
+        float setX = v.getPosX() + v.coordCanons[i][0];
+        float setY = v.getPosY() + v.coordCanons[i][1];
+        if (tire) {
+            setX = v.coordCanons[i][0];
+            setY = v.coordCanons[i][1];
+        }
+        l[i].setPosX(setX);
+        l[i].setPosY(setY);
         glTranslatef(l[i].getPosX(), l[i].getPosY(), l[i].getPosZ());
         glMaterialfv(GL_FRONT, GL_DIFFUSE, rouge);
         l[i].mySolidLaser();
@@ -260,15 +266,16 @@ static void display(void) {
     
     scene();
 
+    if (depassement && !mort) {
+        hud.drawHud("Vous sortez de la zone de jeu, revenez vers le centre", -1000, -2.5, 8.0);
+    }
     if (!animation && !mort)
         hud.drawHud("Pour lancer le parcours, appuyer sur [entree] !",-1000,-2.5,8.0);
 
     if (mort)
         hud.drawHud("Vous etes decede, pour relancer la partie appuyez sur [r] ", -1000, -2.5, 8.0);
 
-    if (depassement) {
-        hud.drawHud("Vous sortez de la zone de jeu, revenez vers le centre", -1000, -2.5, 8.0);
-    }
+    
     hud.drawHud("score", v.getScore(), -8.0, 8.0);
     hud.drawHud("vie", v.getVie(), 8.0, 8.0);
 
@@ -303,6 +310,10 @@ static void idle(void) {
     if (tire) {
         for (int i = 0; i < 3; i++) {
             l[i].setPosZ(l[i].getPosZ() - 0.1);
+        }
+        if (l[0].getPosZ() < -40.0f) {
+            initLaser();
+            tire = false;
         }
     }
 
@@ -408,7 +419,6 @@ static void idle(void) {
             }
         }
         
-
         if (v.getVie() <= 0) {
             mort = true;
             animation = false;
@@ -450,6 +460,7 @@ static void keyboard(unsigned char key, int x, int y) {
         animation = false;
         mort = false;
         tire = false;
+        depassement = false;
         speedAnneauZ = 0.3f;
         speedDeplacement = 0.9f;
         glutIdleFunc(NULL);
@@ -467,23 +478,23 @@ static void deplacement() {
 
     if (mort || !animation) return;
 
-    if (v.getPosX() <= -20.0f || v.getPosX() >= 20.0f || v.getPosY() <= -20.0f || v.getPosY() >= 20.0f) {
+    if (v.getPosX() <= -15.0f || v.getPosX() >= 15.0f || v.getPosY() <= -10.0f || v.getPosY() >= 10.0f) {
         depassement = true;
     }
     else {
         depassement = false;
     }
 
-    if (touches[0] && v.getPosX() >= -20.0f) {   //Gauche
+    if (touches[0] && v.getPosX() >= -15.0f) {   //Gauche
         v.setPosX(v.getPosX() - speedDeplacement);
     }
-    if (touches[1] && v.getPosX() <= 20.0f) {   //Droite
+    if (touches[1] && v.getPosX() <= 15.0f) {   //Droite
         v.setPosX(v.getPosX() + speedDeplacement);
     }
-    if (touches[2] && v.getPosY() <= 20.0f) {   //Haut
+    if (touches[2] && v.getPosY() <= 10.0f) {   //Haut
         v.setPosY(v.getPosY() + speedDeplacement);
     }
-    if (touches[3] && v.getPosY() >= -20.0f) {   //Bas
+    if (touches[3] && v.getPosY() >= -10.0f) {   //Bas
         v.setPosY(v.getPosY() - speedDeplacement);
     }   
     
