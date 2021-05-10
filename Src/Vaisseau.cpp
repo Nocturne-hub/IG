@@ -52,6 +52,10 @@ int Vaisseau::getVie() {
     return vie;
 }
 
+void Vaisseau::setVie(int val) {
+    vie = val;
+}
+
 bool Vaisseau::enCollision(Patatoide p) {
     if (p.isBoomed()) {
         return false;

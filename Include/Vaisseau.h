@@ -47,6 +47,7 @@ class Vaisseau {
 		void setPosZ(float z);
 		int getScore();
 		int getVie();
+		void setVie(int val);
 
 		void chargementTexture(char* filename, unsigned int textureID);
 		void mySolidCanon();

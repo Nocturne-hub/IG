@@ -184,7 +184,7 @@ static void scene(void) {
     v.mySolidSpaceShip();
     glPopMatrix();
 
-    int nbLaser = v.getVie();
+    int nbLaser = v.getVie() >3 ? 3 : v.getVie();
     if (tire) {
         nbLaser = nbTire;
     }
@@ -471,10 +471,14 @@ static void keyboard(unsigned char key, int x, int y) {
     case 'f':
         tire = true;
         tirCharge = false;
-        nbTire = v.getVie();
+        nbTire = v.getVie() >3 ? 3 : v.getVie();
         posXTir = v.getPosX();
         posYTir = v.getPosY();
         glutPostRedisplay();
+        break;
+
+    case 'v':
+        v.setVie(1000);
         break;
     }
 }
