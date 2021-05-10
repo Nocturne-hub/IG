@@ -28,9 +28,9 @@ static bool firstPerson = false;
 static bool lumiere = true;
 static bool mort = false;
 static bool lockCam = true;
-/*static bool depassement = false;
-static bool clignotement = false;*/
+static bool depassement = false;
 static bool tire = false;
+static int nbTire = 0;
 
 
 static const float blanc[] = { 1.0F,1.0F,1.0F,1.0F };
@@ -128,22 +128,10 @@ static void init(void) {
     const GLfloat pos2[] = { v.getPosX() - 20.0F, 0.0F, 10.0F, 0.0F };
     const GLfloat pos3[] = { 0.0F, v.getPosY() + 20.0F, 10.0F, 0.0F };
     const GLfloat pos4[] = { 0.0F, v.getPosY() - 20.0F, 10.0F, 0.0F };
-    //glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, blanc);
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    glLightfv(GL_LIGHT1, GL_AMBIENT, rouge);
-    glLightfv(GL_LIGHT1, GL_POSITION, pos1);
-    glLightfv(GL_LIGHT2, GL_AMBIENT, rouge);
-    glLightfv(GL_LIGHT2, GL_POSITION, pos2);
-    glLightfv(GL_LIGHT3, GL_AMBIENT, rouge);
-    glLightfv(GL_LIGHT3, GL_POSITION, pos3);
-    glLightfv(GL_LIGHT4, GL_AMBIENT, rouge);
-    glLightfv(GL_LIGHT4, GL_POSITION, pos4);
-    //glLightfv(GL_LIGHT2, GL_DIFFUSE, bleu);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    /*glEnable(GL_LIGHT1);
-    glEnable(GL_LIGHT2);*/
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
@@ -170,11 +158,13 @@ static void scene(void) {
 
     glPushMatrix();
     for (int i = 0; i < NBPATATOIDE; i++) {
-        glPushMatrix();
-        glTranslatef(patatoides[i].getPosX(), patatoides[i].getPosY(), patatoides[i].getPosZ());
-        glRotatef(patatoides[i].getAngleRotation(), patatoides[i].getAxeRotationX(), patatoides[i].getAxeRotationY(), patatoides[i].getAxeRotationZ());
-        patatoides[i].myPatatoide(1.0f);
-        glPopMatrix();
+        if(!patatoides[i].isBoomed()){
+            glPushMatrix();
+            glTranslatef(patatoides[i].getPosX(), patatoides[i].getPosY(), patatoides[i].getPosZ());
+            glRotatef(patatoides[i].getAngleRotation(), patatoides[i].getAxeRotationX(), patatoides[i].getAxeRotationY(), patatoides[i].getAxeRotationZ());
+            patatoides[i].myPatatoide(1.0f);
+            glPopMatrix();
+        }
     }
 
     for (int i = 0; i < NBANNEAU; i++) {
@@ -191,7 +181,11 @@ static void scene(void) {
     v.mySolidSpaceShip();
     glPopMatrix();
 
-    for (int i = 0; i < 3; i++) {
+    int nbLaser = v.getVie();
+    if (tire) {
+        nbLaser = nbTire;
+    }
+    for (int i = 0; i < nbLaser; i++) {
         glPushMatrix();
         l[i].setPosX(v.getPosX() + v.coordCanons[i][0]);
         l[i].setPosY(v.getPosY() + v.coordCanons[i][1]);
@@ -234,29 +228,6 @@ static void display(void) {
     else {
         glDisable(GL_LIGHTING);
     }
-    
-    
-    /*
-    if (depassement && clignotement) {
-        glDisable(GL_LIGHT0);
-        glEnable(GL_LIGHT1);
-        glEnable(GL_LIGHT2);
-        glEnable(GL_LIGHT3);
-        glEnable(GL_LIGHT4);
-        clignotement = false;
-    }
-    else {
-        glEnable(GL_LIGHT0);
-        glDisable(GL_LIGHT1);
-        glDisable(GL_LIGHT2);
-        glDisable(GL_LIGHT3);
-        glDisable(GL_LIGHT4);
-        std::chrono::time_point<std::chrono::system_clock> timeEnd = std::chrono::system_clock::now();
-        double nTime = std::chrono::duration_cast<std::chrono::milliseconds>(timeEnd - timeStart).count() / 1000.0;
-        if (nTime >= 1.0) {
-            clignotement = true;
-        }
-    }*/
 
     /*const GLfloat light0_position[] = { v.getPosX(),v.getPosY(),v.getPosZ(),1.0 };
     const GLfloat light1_position[] = { 0.0,0.0,0.0,0.0 };
@@ -295,6 +266,9 @@ static void display(void) {
     if (mort)
         hud.drawHud("Vous etes decede, pour relancer la partie appuyez sur [r] ", -1000, -2.5, 8.0);
 
+    if (depassement) {
+        hud.drawHud("Vous sortez de la zone de jeu, revenez vers le centre", -1000, -2.5, 8.0);
+    }
     hud.drawHud("score", v.getScore(), -8.0, 8.0);
     hud.drawHud("vie", v.getVie(), 8.0, 8.0);
 
@@ -425,12 +399,15 @@ static void idle(void) {
             patatoides[i].boom();
         }
 
-        for (int j = 0; j < 3; j++) {
-            if (l[j].enCollision(patatoides[i])) {
-                patatoides[i].boom();
-                printf("Colision");
+        if (tire) {
+            for (int j = 0; j < 3; j++) {
+                if (l[j].enCollision(patatoides[i])) {
+                    patatoides[i].boom();
+                    printf("Colision");
+                }
             }
         }
+        
 
         if (v.getVie() <= 0) {
             mort = true;
@@ -480,6 +457,7 @@ static void keyboard(unsigned char key, int x, int y) {
         break;
     case 'f':
         tire = true;
+        nbTire = v.getVie();
         glutPostRedisplay();
         break;
     }
@@ -489,25 +467,25 @@ static void deplacement() {
 
     if (mort) return;
 
-    if (touches[0]) {   //Gauche
-        v.setPosX(v.getPosX() - speedDeplacement);
-    }
-    if (touches[1]) {   //Droite
-        v.setPosX(v.getPosX() + speedDeplacement);
-    }
-    if (touches[2]) {   //Haut
-        v.setPosY(v.getPosY() + speedDeplacement);
-    }
-    if (touches[3]) {   //Bas
-        v.setPosY(v.getPosY() - speedDeplacement);
-    }
-
-   /* if (v.getPosX() <= -20.0f || v.getPosX() >= 20.0f || v.getPosY() <= -20.0f || v.getPosY() >= 20.0f) {
+    if (v.getPosX() <= -20.0f || v.getPosX() >= 20.0f || v.getPosY() <= -20.0f || v.getPosY() >= 20.0f) {
         depassement = true;
     }
     else {
         depassement = false;
-    }*/
+    }
+
+    if (touches[0] && v.getPosX() >= -20.0f) {   //Gauche
+        v.setPosX(v.getPosX() - speedDeplacement);
+    }
+    if (touches[1] && v.getPosX() <= 20.0f) {   //Droite
+        v.setPosX(v.getPosX() + speedDeplacement);
+    }
+    if (touches[2] && v.getPosY() <= 20.0f) {   //Haut
+        v.setPosY(v.getPosY() + speedDeplacement);
+    }
+    if (touches[3] && v.getPosY() >= -20.0f) {   //Bas
+        v.setPosY(v.getPosY() - speedDeplacement);
+    }   
     
     glutPostRedisplay();
 }

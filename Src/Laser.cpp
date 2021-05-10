@@ -74,6 +74,7 @@ void Laser::mySolidLaser(){
 }
 
 bool Laser::enCollision(Patatoide p) {
+
     if (p.isBoomed()) {
         return false;
     }
@@ -82,7 +83,8 @@ bool Laser::enCollision(Patatoide p) {
     float absY = abs(p.getPosY() - posY);
     float absZ = abs(p.getPosZ() - posZ);
 
-    if (absX <= tailleX && absY <= (tailleY) && absZ <= tailleZ) {
+
+    if (absX <= tailleX + 1.0f && absY <= tailleY + 1.0f && absZ <= tailleZ + 1.0f) {
         printf("AIE");
         return true;
     }
